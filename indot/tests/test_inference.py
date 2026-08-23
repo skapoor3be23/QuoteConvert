@@ -1,11 +1,17 @@
-import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+import sys
+from pathlib import Path
+
+TEST_DIR = Path(__file__).resolve().parent
+PROJECT_DIR = TEST_DIR.parent
+DATA_DIR = PROJECT_DIR / "data"
+
+sys.path.insert(0, str(PROJECT_DIR))
 import json
 import numpy as np
 import pandas as pd
 from inference import build_history_snapshot, infer, MODEL_ARTIFACT
 
-df = pd.read_csv("../data/indot_dataset.csv")
+df = pd.read_csv(DATA_DIR / "indot_dataset.csv")
 df["letting_date"] = pd.to_datetime(df["letting_date"])
 train = df[df.split == "train"]
 TRAIN_GLOBAL_RATIOS = sorted(train.ratio.values)
