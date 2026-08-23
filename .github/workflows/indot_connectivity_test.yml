@@ -8,74 +8,59 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Test official INDOT letting page
+      - name: Fetch official INDOT letting page
         shell: bash
         run: |
           set -euxo pipefail
 
-          URL="https://www.in.gov/indot/doing-business-with-indot/home/contracts/wednesday%2C-september-2%2C-2026-regular-letting/"
+          PAGE_URL="https://www.in.gov/indot/doing-business-with-indot/home/contracts/wednesday%2C-july-8%2C-2026-regular-letting/"
 
-          echo "Testing: $URL"
-
-          curl -L --fail --silent --show-error \
-            --connect-timeout 20 \
-            --max-time 60 \
-            -o sept_2_2026.html \
-            "$URL"
-
-          echo "Page downloaded:"
-          wc -c sept_2_2026.html
-
-          echo "Page title:"
-          grep -oi '<title[^>]*>[^<]*</title>' sept_2_2026.html | head -n 1 || true
-
-      - name: Download official INDOT Planholder PDF
-        shell: bash
-        run: |
-          set -euxo pipefail
-
-          URL="https://www.in.gov/indot/doing-business-with-indot/files/BidderList_07.08.pdf"
-
-          echo "Testing: $URL"
+          echo "Fetching:"
+          echo "$PAGE_URL"
 
           curl -L --fail --silent --show-error \
             --connect-timeout 20 \
             --max-time 60 \
-            -o bidder_list_07_08_2026.pdf \
-            "$URL"
+            -o july_8_2026.html \
+            "$PAGE_URL"
 
-          echo "PDF size:"
-          wc -c bidder_list_07_08_2026.pdf
-
-          echo "PDF header:"
-          head -c 5 bidder_list_07_08_2026.pdf
           echo
+          echo "Downloaded bytes:"
+          wc -c july_8_2026.html
 
-          if [ "$(head -c 5 bidder_list_07_08_2026.pdf)" != "%PDF-" ]; then
-            echo "ERROR: downloaded file is not a PDF"
-            exit 1
-          fi
+          echo
+          echo "Title:"
+          grep -oi '<title[^>]*>[^<]*</title>' july_8_2026.html | head -n 1 || true
 
-      - name: Calculate provenance
+      - name: Find Bidders List link
         shell: bash
         run: |
           set -euxo pipefail
 
-          echo "Retrieval timestamp:"
+          echo "Searching page for Bidders List links..."
+
+          grep -oiE 'href="[^"]+"[^>]*>[^<]*Bidders List[^<]*' \
+            july_8_2026.html || true
+
+          echo
+          echo "All PDF links containing bidder/list:"
+          grep -oiE 'href="[^"]+\.pdf[^"]*"' july_8_2026.html |
+            grep -Ei 'bid|list' || true
+
+      - name: Save provenance
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          echo "Retrieved:"
           date -u +"%Y-%m-%dT%H:%M:%SZ"
 
           echo
           echo "SHA-256:"
-          sha256sum bidder_list_07_08_2026.pdf
+          sha256sum july_8_2026.html
 
-          echo
-          echo "Files:"
-          ls -lh sept_2_2026.html bidder_list_07_08_2026.pdf
-
-      - name: Upload test artifacts
+      - name: Upload page
         uses: actions/upload-artifact@v4
         with:
-          name: indot-connectivity-results
-          path: |
-            sept_2_2026.html
-            bidder_list_07_08_2026.pdf
+          name: indot-page-test
+          path: july_8_2026.html
