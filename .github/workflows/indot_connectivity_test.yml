@@ -15,14 +15,37 @@ jobs:
 
           PAGE_URL="https://www.in.gov/indot/doing-business-with-indot/home/contracts/wednesday%2C-july-8%2C-2026-regular-letting/"
 
+          echo "Fetching:"
+          echo "$PAGE_URL"
+
           curl -L --fail --silent --show-error \
             --connect-timeout 20 \
             --max-time 60 \
             -o july_8_2026.html \
             "$PAGE_URL"
 
+          echo
           echo "Letting page downloaded:"
           wc -c july_8_2026.html
+
+          echo
+          echo "Page title:"
+          grep -oi '<title[^>]*>[^<]*</title>' july_8_2026.html | head -n 1 || true
+
+      - name: Find Bidders List link
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          echo "Searching page for Bidders List links..."
+
+          grep -oiE 'href="[^"]+"[^>]*>[^<]*Bidders List[^<]*' \
+            july_8_2026.html || true
+
+          echo
+          echo "All PDF links containing bidder/list:"
+          grep -oiE 'href="[^"]+\.pdf[^"]*"' july_8_2026.html |
+            grep -Ei 'bid|list' || true
 
       - name: Download real INDOT Planholder List
         shell: bash
@@ -50,7 +73,7 @@ jobs:
           echo
 
           if [ "$(head -c 5 bidders_list_07_08_2026.pdf)" != "%PDF-" ]; then
-            echo "ERROR: not a PDF"
+            echo "ERROR: downloaded file is not a PDF"
             exit 1
           fi
 
@@ -63,7 +86,7 @@ jobs:
             bidders_list_07_08_2026.pdf \
             bidders_list_07_08_2026.txt
 
-          echo "Extracted text:"
+          echo "Extracted text lines:"
           wc -l bidders_list_07_08_2026.txt
 
           echo
@@ -78,14 +101,14 @@ jobs:
           echo "Contract IDs found:"
           grep -Eo '[A-Z]-[0-9]{5}-A' bidders_list_07_08_2026.txt |
             sort -u |
-            head -20
+            head -20 || true
 
           echo
           echo "Valid For Bid occurrences:"
           grep -i -c "Valid For Bid" bidders_list_07_08_2026.txt || true
 
           echo
-          echo "Planholder list occurrences:"
+          echo "Proposal Planholder List occurrences:"
           grep -i -c "PROPOSAL PLANHOLDER LIST" bidders_list_07_08_2026.txt || true
 
       - name: Save provenance
@@ -99,6 +122,10 @@ jobs:
           echo
           echo "SHA-256:"
           sha256sum bidders_list_07_08_2026.pdf
+
+          echo
+          echo "Downloaded files:"
+          ls -lh july_8_2026.html bidders_list_07_08_2026.pdf bidders_list_07_08_2026.txt
 
       - name: Upload live-data evidence
         uses: actions/upload-artifact@v4
