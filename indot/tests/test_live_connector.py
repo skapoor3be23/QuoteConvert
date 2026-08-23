@@ -268,6 +268,47 @@ with patch.object(lc, "discover_upcoming_lettings", return_value=(bad_pdf_result
     assert r["status"] == "invalid_pdf", r
     print("PASS: non-%PDF- bytes -> status='invalid_pdf'")
 
+# ============================================================
+# STAGE 3: run_live_pipeline() -- the full diagram, chained through to the
+# FROZEN inference.infer(). Validated against the real R-43365-A candidate
+# field, cross-checked against the exact result from a prior manual round.
+# ============================================================
+if REAL_PDF.exists():
+    print("\n" + "=" * 78)
+    print("TEST: run_live_pipeline() -- honest EE gap, then happy path")
+    print("=" * 78)
+    real_checksum2 = hashlib.sha256(REAL_PDF.read_bytes()).hexdigest()
+    fake_ingest_ok = {
+        "status": "ok", "letting_date": "2026-07-08", "letting_page_url": "x",
+        "planholder_url": "https://www.in.gov/indot/doing-business-with-indot/files/Bidders-List_7.1.pdf",
+        "pdf_size_bytes": REAL_PDF.stat().st_size, "pdf_sha256": real_checksum2,
+        "retrieval_timestamp": "2026-08-24T00:00:00+00:00", "changed_this_fetch": True,
+        "candidate_count": 238, "valid_for_bid_count": 238, "local_path": str(REAL_PDF),
+    }
+
+    with patch.object(lc, "ingest_earliest_planholder_list", return_value=fake_ingest_ok):
+        result = lc.run_live_pipeline("R-43365-A", "35-0844079", 3229714.90)
+    assert result["status"] == "ee_not_available_prebid", result
+    print("PASS: correctly refuses to fabricate/borrow EE when no verified pre-bid source exists")
+
+    import parse_indot as _pi
+    _real_full_text = _pi.full_text
+    def _patched_full_text(path):
+        txt = _real_full_text(path)
+        return txt.replace("R -43365-A", "R -43365-A\nEngineer's Estimate: $3,588,572.11", 1)
+
+    with patch.object(lc, "ingest_earliest_planholder_list", return_value=fake_ingest_ok), \
+         patch.object(lc, "full_text", side_effect=_patched_full_text):
+        result2 = lc.run_live_pipeline("R-43365-A", "35-0844079", 3229714.90)
+    assert result2["status"] == "ok"
+    assert 0.0 <= result2["p_win"] <= 1.0
+    assert result2["n_valid_candidates"] == 9
+    assert abs(result2["p_win"] - 0.999499) < 1e-5, result2["p_win"]
+    print(f"PASS: with EE available, reaches frozen inference -> p_win={result2['p_win']:.6f} "
+          f"(matches the prior manually-validated R-43365-A result exactly)")
+else:
+    print("\n(skipping Stage 3 pipeline test -- bidders_list_07_08_2026.pdf not present in this checkout)")
+
 print("\n" + "=" * 78)
 print("ALL live_connector TESTS PASSED (no network access used)")
 print("=" * 78)

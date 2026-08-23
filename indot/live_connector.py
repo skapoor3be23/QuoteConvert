@@ -43,6 +43,18 @@ for a documented reason, not speculatively):
     For ONE specific letting the caller has already chosen from Stage 1's output,
     downloads and parses its Planholder PDF (reusing parse_indot.py). Never invoked
     automatically for every discovered letting.
+
+  Stage 3 -- LIVE PIPELINE (run_live_pipeline):
+    Chains: check candidate field -> poll later if not yet published -> ingest ->
+    locate Engineer's Estimate -> call the FROZEN inference.infer() (never modified,
+    only called). IMPORTANT, VERIFIED GAP (checked directly, not assumed): neither
+    the Planholder List nor the SOPI document contains "Engineer's Estimate" or
+    "Estimate" anywhere (grepped directly against real downloaded copies of both).
+    The only source where this project has ever found EE is the Official Bid
+    Tabulation, which is a POST-BID document and must never be used pre-bid. Until
+    a genuine pre-bid EE source is found and verified, run_live_pipeline() returns
+    status="ee_not_available_prebid" rather than borrowing from a post-bid document
+    or inventing a value.
 """
 import urllib.request
 import urllib.parse
@@ -53,7 +65,8 @@ import os
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 
-from parse_indot import load_blocks, PLAN_NAME_RE, full_text
+from parse_indot import load_blocks, PLAN_NAME_RE, EE_RE, FEIN_RE, DISTRICT_RE, clean, full_text
+from inference import build_history_snapshot, infer, MODEL_ARTIFACT
 
 UA = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15'}
 CACHE_DIR = "live_cache"
@@ -434,7 +447,101 @@ def ingest_earliest_planholder_list(today=None):
         "changed_this_fetch": pdf_entry["changed_this_fetch"],
         "candidate_count": total_candidates,
         "valid_for_bid_count": total_valid,
+        "local_path": pdf_entry["local_path"],
     }
+
+
+def _find_ee_prebid(text):
+    """Best-effort search for a genuinely PRE-BID Engineer's Estimate. Reuses
+    parse_indot.EE_RE (already validated against Official Bid Tabulations) purely
+    as a text pattern -- this does NOT claim the searched text is a bid tabulation.
+    VERIFIED FACT: as of this project, neither the Planholder List nor the SOPI
+    document has ever contained this pattern (checked directly against real
+    documents, not assumed). Returns None if not found -- callers must not fall
+    back to a post-bid source or invent a value."""
+    m = EE_RE.search(text)
+    if not m:
+        return None
+    return float(m.group(1).replace(",", ""))
+
+
+def _load_historical_dataframe():
+    import pandas as pd
+    data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "indot_dataset.csv")
+    df = pd.read_csv(data_path)
+    df["letting_date"] = pd.to_datetime(df["letting_date"])
+    return df
+
+
+def run_live_pipeline(contract_id, contractor_fein, bid_amount, today=None):
+    """STAGE 3: the full diagram --
+      check candidate field -> (unavailable) check_again_later -> ingest ->
+      load EE -> run FROZEN inference.infer() -> P(win).
+
+    Never modifies inference.py -- only imports and calls build_history_snapshot()
+    and infer() exactly as they exist. `contract_id` must be one of the contracts
+    inside the earliest upcoming letting's Planholder List (one letting bundles many
+    contracts; this pipeline runs for one at a time, same as every other inference
+    call in this project).
+
+    Returns one of:
+      status="check_again_later"        -- no upcoming letting, or none published yet
+      status="unavailable"              -- invalid PDF, or contract_id not found in it
+      status="ee_not_available_prebid"  -- REAL, CURRENTLY UNRESOLVED GAP: no verified
+                                            pre-bid EE source exists yet (see module
+                                            docstring) -- does not fabricate or borrow
+                                            a post-bid value
+      the frozen infer() result          -- on success
+    """
+    ingest = ingest_earliest_planholder_list(today=today)
+
+    if ingest["status"] == "no_upcoming_letting":
+        return {"status": "check_again_later", "reason": "no_upcoming_letting"}
+    if ingest["status"] == "no_prebid_candidate_list":
+        return {"status": "check_again_later", "reason": "no_prebid_candidate_list",
+                "letting_date": ingest["letting_date"], "letting_page_url": ingest["letting_page_url"]}
+    if ingest["status"] == "invalid_pdf":
+        return {"status": "unavailable", "reason": "invalid_pdf",
+                "letting_date": ingest["letting_date"], "letting_page_url": ingest["letting_page_url"]}
+
+    txt = full_text(ingest["local_path"])
+    blocks = load_blocks(txt)
+    if contract_id not in blocks:
+        return {"status": "unavailable", "reason": "contract_not_found_in_planholder_list",
+                "contract_id": contract_id, "letting_date": ingest["letting_date"]}
+
+    ptxt = blocks[contract_id][0]
+
+    candidate_field = []
+    for m in PLAN_NAME_RE.finditer(ptxt):
+        name = clean(m.group(1))
+        valid = m.group(2)
+        tail = ptxt[m.end():m.end() + 120]
+        fein_m = FEIN_RE.search(tail)
+        candidate_field.append({"name": name, "fein": fein_m.group(1) if fein_m else None, "valid_for_bid": valid})
+
+    ee = _find_ee_prebid(ptxt)
+    if ee is None:
+        return {
+            "status": "ee_not_available_prebid",
+            "contract_id": contract_id,
+            "letting_date": ingest["letting_date"],
+            "reason": ("No verified pre-bid Engineer's Estimate source exists yet. "
+                       "The Planholder List and SOPI documents do not contain it; the "
+                       "Official Bid Tabulation does, but is post-bid and was not used."),
+        }
+
+    district_m = DISTRICT_RE.search(ptxt)
+    district = district_m.group(1) if district_m else None
+
+    df = _load_historical_dataframe()
+    train_global_ratios = sorted(df[df.split == "train"].ratio.values)
+    as_of = ingest["letting_date"]
+    import pandas as pd
+    snapshot = build_history_snapshot(df, pd.Timestamp(as_of), train_global_ratios)
+    project_info = {"engineers_estimate": ee, "district": district}
+
+    return infer(contract_id, contractor_fein, bid_amount, project_info, candidate_field, snapshot)
 
 
 def run_discovery_report():

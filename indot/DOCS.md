@@ -52,7 +52,7 @@ MODE B -- WIN-PROBABILITY ANALYSIS (user supplies 3 inputs)
 Contractor (from the live candidate field above)
 Reference Estimate ($)  <-- supplied by the contractor; INDOT's own
                              Engineer's Estimate is NOT published pre-bid
-                             (verified -- see DOCS.md / README.md Section L)
+                             (verified -- see DOCS.md / README.md Section 9)
 Candidate Bid ($)
         |
         v
@@ -188,10 +188,11 @@ Two things, in order: first, widen automatic per-contract detail beyond just the
 | Research | **Complete** |
 | Model | **Frozen** (`indot_survival_v1.0`) |
 | Validation | **Complete** (2,027 contracts, 431-contract held-out test) |
-| Shadow EE experiment | **Complete — rejected** (downstream AUC 0.725 -> 0.581; see README.md Section L) |
-| Live discovery + ingestion | **Complete** — validated live on GitHub Actions (Stage 1 ~15s; Stage 2 reproduces 238/238 real candidates) |
+| Shadow EE experiment | **Complete — rejected** (downstream AUC 0.725 -> 0.581; see README.md Section 9) |
+| Live discovery + ingestion | **Complete** — validated live on GitHub Actions (discovery ~15s; snapshot refresh ~17s; Planholder parsing reproduces 238/238 real candidates) |
 | Snapshot decoupling | **Complete** — Streamlit reads `data/live_snapshot.json`; `generate_snapshot.py` + `indot_live_refresh.yml` are the only INDOT-connected components |
-| V1 product (Mode A / Mode B) | **Complete** (Streamlit: Live Competition, Win-Probability Analysis, Historical Demo regression tab) |
-| First live snapshot commit | **Pending** — requires a `workflow_dispatch` run or the daily schedule to fire at least once; this local environment cannot reach `www.in.gov` to generate it directly (confirmed: `[WinError 10054]` on attempt) |
+| V1 product (Mode A / Mode B) | **Complete** (Streamlit: Live Competition, Win-Probability Analysis, Historical Demo regression tab), UI-polished in two follow-up rounds |
+| First live snapshot commit | **Complete** — a real snapshot for the September 2, 2026 letting (status `no_prebid_candidate_list`) is committed in `data/live_snapshot.json` |
+| Repository cleanup | **Complete** — research/dev artifacts archived under `indot/research/legacy_*`; production surface reduced to app/engine/pipeline/tests/data |
 | Live inference on a genuinely upcoming project | **Requires a user-supplied Reference Estimate** — INDOT's own Engineer's Estimate is verified not available pre-bid |
 | Documentation | **This deliverable** |
