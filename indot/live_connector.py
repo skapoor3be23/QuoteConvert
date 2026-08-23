@@ -15,22 +15,34 @@ against live INDOT data from this environment -- that validation is intentionall
 deferred to a GitHub Actions run with real outbound access. Do not treat this
 module as live-validated until that run has actually happened.
 
-TWO-STAGE ARCHITECTURE (this design was forced by a real failure: the first GitHub
-Actions run of the single-stage version was cancelled after 10m42s still running,
-because it downloaded a full Planholder PDF for every discovered letting link
-before checking whether that letting was even upcoming -- see the final report
-for the exact cause):
+THREE-STAGE ARCHITECTURE (this design went through two real failures, each fixed
+for a documented reason, not speculatively):
 
-  Stage 1 -- LETTING DISCOVERY (discover_upcoming_lettings):
-    Fetches the archive index once, visits each candidate letting page ONCE with a
-    bounded 15s timeout, reads only its date and (if upcoming) whether a Planholder
-    PDF link exists. Never downloads or parses a PDF. Bounded to the first
-    MAX_UPCOMING_LETTINGS (5) upcoming lettings, sorted ascending by date.
+  Failure 1: the original single-stage version downloaded a full Planholder PDF
+  for every discovered letting link before checking whether it was upcoming ->
+  cancelled after 10m42s.
+
+  Failure 2 (this round): the "fixed" version still fetched every discovered
+  LETTING PAGE just to read its date -- even though the archive index's own
+  visible link text already contains that date (e.g. "Wednesday, September 2,
+  2026 - Regular Letting"). With ~40+ archive links this still took minutes.
+
+  Stage 0 -- LOCAL DATE FILTERING (no network beyond the single archive fetch):
+    The archive index is fetched exactly ONCE. Every <a href>...</a> pair is parsed
+    locally (href AND visible text) via a lightweight HTMLParser. The letting date
+    is extracted from each link's TEXT, never from the URL. Past lettings and
+    lettings whose date can't be read are dropped without any further request.
+    Only the earliest MAX_UPCOMING_LETTINGS (5) candidates survive this stage.
+
+  Stage 1 -- PLANHOLDER DETECTION (only for the <=5 survivors of Stage 0):
+    Each selected letting page is fetched (at most 5 requests total), its HTML is
+    scanned for a Planholder/Bidders-List link, and that link is resolved to an
+    absolute URL. The PDF itself is never downloaded here.
 
   Stage 2 -- PLANHOLDER INGESTION (get_planholder_list / _candidate_count_for_letting):
     For ONE specific letting the caller has already chosen from Stage 1's output,
-    downloads and parses its Planholder PDF (reusing parse_indot.py). This is the
-    expensive step and is never invoked automatically for every discovered letting.
+    downloads and parses its Planholder PDF (reusing parse_indot.py). Never invoked
+    automatically for every discovered letting.
 """
 import urllib.request
 import urllib.parse
@@ -39,6 +51,7 @@ import json
 import hashlib
 import os
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 
 from parse_indot import load_blocks, PLAN_NAME_RE, full_text
 
@@ -59,6 +72,19 @@ DISCOVERY_TIMEOUT_SECONDS = 15
 # "which letting is this" question and the "has it already happened" filter.
 LETTING_DATE_RE = re.compile(
     r'(?:[A-Za-z]+,\s*)?([A-Za-z]+ \d{1,2},\s*\d{4})'
+)
+
+_MONTHS = {
+    "jan": 1, "january": 1, "feb": 2, "february": 2, "mar": 3, "march": 3,
+    "apr": 4, "april": 4, "may": 5, "jun": 6, "june": 6, "jul": 7, "july": 7,
+    "aug": 8, "august": 8, "sep": 9, "sept": 9, "september": 9,
+    "oct": 10, "october": 10, "nov": 11, "november": 11, "dec": 12, "december": 12,
+}
+# Tolerant of a leading day-of-week, an abbreviated or full month name with an
+# optional trailing period ("Nov." or "November"), and either "Month Day, Year"
+# or "Day Month Year" is NOT required -- INDOT always uses "Month Day, Year".
+LINK_TEXT_DATE_RE = re.compile(
+    r'(?:[A-Za-z]+,\s*)?([A-Za-z]+)\.?\s+(\d{1,2}),\s*(\d{4})'
 )
 
 
@@ -107,6 +133,62 @@ def extract_letting_date(page_text):
         return datetime.strptime(raw, "%B %d %Y").date()
     except ValueError:
         return None
+
+
+def extract_letting_date_from_link(text):
+    """Extract a letting date from an archive link's VISIBLE TEXT (not the href,
+    not the URL slug). Supports:
+      "Wednesday, September 2, 2026 - Regular Letting"
+      "Wednesday, August 5, 2026 - Regular Letting"
+      "Wednesday, Nov. 15, 2023 - Regular Letting"   (abbreviated month + period)
+      "July 12, 2023 - Regular Letting"              (no day-of-week prefix)
+    Returns a datetime.date, or None for unsupported/ambiguous text -- callers must
+    skip (not guess) when this returns None."""
+    m = LINK_TEXT_DATE_RE.search(text)
+    if not m:
+        return None
+    month_word, day, year = m.group(1).lower(), int(m.group(2)), int(m.group(3))
+    month = _MONTHS.get(month_word)
+    if month is None:
+        return None
+    try:
+        return datetime(year, month, day).date()
+    except ValueError:
+        return None
+
+
+class _AnchorParser(HTMLParser):
+    """Collects (href, visible_text) for every <a> tag in one pass. Preferred over
+    a brittle href-only regex because the letting date now comes from the anchor's
+    TEXT, which a regex on raw HTML cannot reliably associate with the matching href."""
+    def __init__(self):
+        super().__init__()
+        self.links = []  # list of [href, text_parts]
+        self._current_href = None
+
+    def handle_starttag(self, tag, attrs):
+        if tag.lower() == "a":
+            href = dict(attrs).get("href")
+            self._current_href = href
+            if href is not None:
+                self.links.append([href, []])
+
+    def handle_data(self, data):
+        if self._current_href is not None and self.links and self.links[-1][0] == self._current_href:
+            self.links[-1][1].append(data)
+
+    def handle_endtag(self, tag):
+        if tag.lower() == "a":
+            self._current_href = None
+
+
+def extract_anchor_links(html):
+    """Returns a list of (href, text) pairs for every <a href="..."> in `html`,
+    with `text` being all the anchor's inner text concatenated and whitespace-
+    normalized. Uses html.parser.HTMLParser, not a brittle regex."""
+    parser = _AnchorParser()
+    parser.feed(html)
+    return [(href, " ".join("".join(parts).split())) for href, parts in parser.links if href]
 
 
 def is_upcoming(letting_date, today=None):
@@ -231,54 +313,69 @@ def _discovery_record(letting_date, letting_url, planholder_list_available,
 
 
 def discover_upcoming_lettings(today=None, max_results=MAX_UPCOMING_LETTINGS):
-    """STAGE 1 ONLY: discover up to `max_results` upcoming lettings. Bounded and fast
-    by design -- never downloads or parses a Planholder PDF (that is Stage 2, see
-    get_planholder_list / _candidate_count_for_letting, called explicitly by the
-    caller for ONE chosen letting afterward). NOT executed against live data from
-    this environment -- see the module docstring.
+    """Discover up to `max_results` upcoming lettings, making AT MOST
+    `1 (archive) + max_results (letting pages)` HTTP requests in total, and ZERO
+    PDF requests. NOT executed against live data from this environment -- see the
+    module docstring.
+
+    Stage 0 (local, no extra requests): fetch the archive index once, parse every
+    <a href>...</a> pair's href AND visible text, extract each candidate's letting
+    date from its TEXT, drop past/undated lettings, dedupe, sort ascending, keep
+    only the first `max_results`.
+
+    Stage 1 (bounded requests): fetch ONLY those <= max_results selected letting
+    pages to detect (not download) a Planholder link.
 
     Returns (results, index_entry) where each result matches exactly:
       letting_date, letting_page_url, planholder_list_available, planholder_url,
       reason (only if unavailable/error)
-    sorted ascending by letting_date, capped at `max_results` records.
+    sorted ascending by letting_date.
     """
     html, index_entry = fetch_with_cache(LETTING_ARCHIVE_URL, timeout=DISCOVERY_TIMEOUT_SECONDS)
     html_text = html.decode("utf-8", errors="ignore")
 
-    raw_links = re.findall(r'href="([^"]*letting[^"]*)"', html_text, re.I)
-    resolved_links = [resolve_url(LETTING_ARCHIVE_URL, l) for l in raw_links]
-    resolved_links = [l for l in resolved_links if not is_archive_index_url(l)]
-    letting_urls = dedupe_urls(resolved_links)
+    anchors = extract_anchor_links(html_text)
 
-    upcoming = []
-    for letting_url in letting_urls:
+    candidates = []  # (letting_date, letting_url)
+    seen_normalized = set()
+    for href, text in anchors:
+        if "letting" not in href.lower():
+            continue
+        letting_url = resolve_url(LETTING_ARCHIVE_URL, href)
+        if is_archive_index_url(letting_url):
+            continue
+        letting_date = extract_letting_date_from_link(text)
+        if not is_upcoming(letting_date, today=today):
+            # past letting, or date unrecoverable from the link text -- skip locally,
+            # no request was made for this one
+            continue
+        norm = normalize_url(letting_url)
+        if norm in seen_normalized:
+            continue
+        seen_normalized.add(norm)
+        candidates.append((letting_date, letting_url))
+
+    # sort ascending and cap BEFORE any letting-page request is made
+    candidates.sort(key=lambda pair: pair[0])
+    selected = candidates[:max_results]
+
+    results = []
+    for letting_date, letting_url in selected:
         try:
             page_html, _page_entry = fetch_with_cache(letting_url, timeout=DISCOVERY_TIMEOUT_SECONDS)
         except Exception as e:
-            # one failed page is recorded but does NOT stop discovery of the rest
-            upcoming.append((None, _discovery_record(
-                None, letting_url, False, reason=f"fetch_error: {e}")))
+            results.append(_discovery_record(letting_date, letting_url, False, reason=f"fetch_error: {e}"))
             continue
 
         page_text = page_html.decode("utf-8", errors="ignore")
-        letting_date = extract_letting_date(page_text)
-        if not is_upcoming(letting_date, today=today):
-            # past letting, or date unrecoverable -- skip silently, not an error
-            continue
-
-        # Planholder DETECTION only: inspect the already-fetched HTML for a link,
-        # resolve it -- never fetch the PDF itself in Stage 1.
         bph_link = find_planholder_link(page_text)
         if bph_link:
             bph_url = resolve_url(letting_url, bph_link)
-            upcoming.append((letting_date, _discovery_record(letting_date, letting_url, True, planholder_url=bph_url)))
+            results.append(_discovery_record(letting_date, letting_url, True, planholder_url=bph_url))
         else:
-            upcoming.append((letting_date, _discovery_record(
-                letting_date, letting_url, False, reason="no_prebid_candidate_list")))
+            results.append(_discovery_record(letting_date, letting_url, False, reason="no_prebid_candidate_list"))
 
-    # sort ascending by date; records with no recoverable date (fetch errors) sort last
-    upcoming.sort(key=lambda pair: (pair[0] is None, pair[0]))
-    results = [rec for _date, rec in upcoming[:max_results]]
+    results.sort(key=lambda r: r["letting_date"])
     return results, index_entry
 
 
