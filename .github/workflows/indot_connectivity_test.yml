@@ -15,37 +15,78 @@ jobs:
 
           PAGE_URL="https://www.in.gov/indot/doing-business-with-indot/home/contracts/wednesday%2C-july-8%2C-2026-regular-letting/"
 
-          echo "Fetching:"
-          echo "$PAGE_URL"
-
           curl -L --fail --silent --show-error \
             --connect-timeout 20 \
             --max-time 60 \
             -o july_8_2026.html \
             "$PAGE_URL"
 
-          echo
-          echo "Downloaded bytes:"
+          echo "Letting page downloaded:"
           wc -c july_8_2026.html
 
-          echo
-          echo "Title:"
-          grep -oi '<title[^>]*>[^<]*</title>' july_8_2026.html | head -n 1 || true
-
-      - name: Find Bidders List link
+      - name: Download real INDOT Planholder List
         shell: bash
         run: |
           set -euxo pipefail
 
-          echo "Searching page for Bidders List links..."
+          PDF_URL="https://www.in.gov/indot/doing-business-with-indot/files/Bidders-List_7.1.pdf"
 
-          grep -oiE 'href="[^"]+"[^>]*>[^<]*Bidders List[^<]*' \
-            july_8_2026.html || true
+          echo "Downloading:"
+          echo "$PDF_URL"
+
+          curl -L --fail --silent --show-error \
+            --connect-timeout 20 \
+            --max-time 120 \
+            -o bidders_list_07_08_2026.pdf \
+            "$PDF_URL"
 
           echo
-          echo "All PDF links containing bidder/list:"
-          grep -oiE 'href="[^"]+\.pdf[^"]*"' july_8_2026.html |
-            grep -Ei 'bid|list' || true
+          echo "PDF size:"
+          wc -c bidders_list_07_08_2026.pdf
+
+          echo
+          echo "PDF header:"
+          head -c 5 bidders_list_07_08_2026.pdf
+          echo
+
+          if [ "$(head -c 5 bidders_list_07_08_2026.pdf)" != "%PDF-" ]; then
+            echo "ERROR: not a PDF"
+            exit 1
+          fi
+
+      - name: Extract PDF text
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          pdftotext -layout \
+            bidders_list_07_08_2026.pdf \
+            bidders_list_07_08_2026.txt
+
+          echo "Extracted text:"
+          wc -l bidders_list_07_08_2026.txt
+
+          echo
+          echo "First 80 lines:"
+          sed -n '1,80p' bidders_list_07_08_2026.txt
+
+      - name: Verify real candidate-field data
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          echo "Contract IDs found:"
+          grep -Eo '[A-Z]-[0-9]{5}-A' bidders_list_07_08_2026.txt |
+            sort -u |
+            head -20
+
+          echo
+          echo "Valid For Bid occurrences:"
+          grep -i -c "Valid For Bid" bidders_list_07_08_2026.txt || true
+
+          echo
+          echo "Planholder list occurrences:"
+          grep -i -c "PROPOSAL PLANHOLDER LIST" bidders_list_07_08_2026.txt || true
 
       - name: Save provenance
         shell: bash
@@ -57,10 +98,13 @@ jobs:
 
           echo
           echo "SHA-256:"
-          sha256sum july_8_2026.html
+          sha256sum bidders_list_07_08_2026.pdf
 
-      - name: Upload page
+      - name: Upload live-data evidence
         uses: actions/upload-artifact@v4
         with:
-          name: indot-page-test
-          path: july_8_2026.html
+          name: indot-live-planholder-test
+          path: |
+            july_8_2026.html
+            bidders_list_07_08_2026.pdf
+            bidders_list_07_08_2026.txt
