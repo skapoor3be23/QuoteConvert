@@ -1,0 +1,112 @@
+name: INDOT Upcoming Discovery
+
+on:
+  workflow_dispatch:
+
+jobs:
+  discover-indot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install discovery dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pypdf pandas numpy
+
+      - name: Run automatic INDOT discovery
+        working-directory: indot
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          echo "Starting automatic INDOT letting discovery..."
+          echo
+
+          python - <<'PY'
+          import json
+          from live_connector import discover_upcoming_lettings
+
+          results, index_entry = discover_upcoming_lettings()
+
+          print()
+          print("=" * 80)
+          print("DISCOVERY SUMMARY")
+          print("=" * 80)
+
+          print(f"Archive retrieval timestamp: {index_entry.get('retrieval_timestamp')}")
+          print(f"Archive checksum: {index_entry.get('checksum')}")
+          print(f"Letting pages discovered: {len(results)}")
+
+          upcoming = [
+              r for r in results
+              if r.get("letting_date")
+          ]
+
+          available = [
+              r for r in results
+              if r.get("planholder_list_available") is True
+          ]
+
+          print(f"Records with letting dates: {len(upcoming)}")
+          print(f"Records with Planholder Lists: {len(available)}")
+
+          print()
+          print("ALL RESULTS")
+          print("=" * 80)
+
+          for result in results:
+              print(json.dumps(result, indent=2, sort_keys=True))
+
+          print()
+          print("=" * 80)
+          print("AVAILABLE PLANHOLDER LISTS")
+          print("=" * 80)
+
+          for result in available:
+              print(json.dumps(result, indent=2, sort_keys=True))
+
+          with open("discovery_results.json", "w", encoding="utf-8") as f:
+              json.dump(
+                  {
+                      "archive": index_entry,
+                      "results": results,
+                  },
+                  f,
+                  indent=2,
+                  sort_keys=True,
+              )
+
+          print()
+          print("Saved discovery_results.json")
+          PY
+
+      - name: Show cached files
+        working-directory: indot
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          echo "Cache contents:"
+          if [ -d "live_cache" ]; then
+            find live_cache -maxdepth 1 -type f -printf '%f\n' | sort
+          else
+            echo "No live_cache directory was created."
+          fi
+
+      - name: Upload discovery evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: indot-upcoming-discovery
+          path: |
+            indot/discovery_results.json
+            indot/live_cache/cache_index.json
+          if-no-files-found: warn
