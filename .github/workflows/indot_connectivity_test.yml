@@ -77,10 +77,13 @@ jobs:
             exit 1
           fi
 
-      - name: Extract PDF text
+            - name: Extract PDF text
         shell: bash
         run: |
           set -euxo pipefail
+
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
 
           pdftotext -layout \
             bidders_list_07_08_2026.pdf \
