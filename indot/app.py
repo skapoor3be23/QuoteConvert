@@ -78,10 +78,6 @@ def load_dataset():
 df, TRAIN_GLOBAL_RATIOS, contracts, SUPPORTED_BAND, FULL_BAND = load_dataset()
 
 
-def competition_label(n_valid, level):
-    return f"{level} competition — {n_valid} pre-bid candidate{'s' if n_valid != 1 else ''}"
-
-
 @st.cache_data(ttl=30)
 def load_snapshot_file(path):
     """Reads a snapshot JSON file from local disk only -- no network call.
@@ -114,13 +110,58 @@ def load_live_state():
             "planholder_retrieved_at": letting.get("planholder_retrieved_at"),
             "retrieved_at": public["retrieved_at"],
             "contracts": letting["contracts"],
+            "valid_for_bid_count": letting.get("valid_for_bid_count"),
         })
     elif public is not None and app_state == ui.APP_STATE_NO_PREBID_CANDIDATE_LIST:
         result.update({
             "letting_date": public["letting"].get("letting_date"),
             "letting_page_url": public["letting"].get("letting_page_url"),
+            "retrieved_at": public["retrieved_at"],
         })
     return result
+
+
+def _format_date_human(iso_date):
+    """Presentation only -- 'YYYY-MM-DD' -> 'September 2, 2026'. Never invents
+    a date; returns the original string unchanged if it can't be parsed."""
+    if not iso_date:
+        return "Unknown"
+    try:
+        import datetime as _dt
+        d = _dt.datetime.strptime(iso_date, "%Y-%m-%d")
+        return f"{d.strftime('%B')} {d.day}, {d.year}"
+    except ValueError:
+        return iso_date
+
+
+def _format_timestamp_human(iso_ts):
+    """Presentation only -- renders an ISO timestamp already present in the
+    snapshot as 'YYYY-MM-DD HH:MM UTC'. Never invents a timestamp; returns the
+    raw string unchanged if it can't be parsed."""
+    if not iso_ts:
+        return "Unknown"
+    try:
+        import datetime as _dt
+        dt = _dt.datetime.fromisoformat(iso_ts.replace("Z", "+00:00"))
+        return dt.strftime("%Y-%m-%d %H:%M UTC")
+    except (ValueError, AttributeError):
+        return iso_ts
+
+
+def _render_status_header(letting_date_display, snapshot_status_label, retrieved_at_display):
+    """Compact 4-up header card used across every Live Competition state."""
+    with st.container(border=True):
+        h1, h2, h3, h4 = st.columns(4)
+        h1.metric("Letting Date", letting_date_display)
+        h2.metric("Data Source", "INDOT")
+        h3.metric("Snapshot Status", snapshot_status_label)
+        h4.metric("Last Refresh", retrieved_at_display)
+
+
+def _render_data_integrity_note():
+    st.caption(
+        "QuoteConvert never substitutes historical bidder data for missing live pre-bid data."
+    )
 
 
 def load_internal_directory():
@@ -146,52 +187,109 @@ live = load_live_state()
 
 # ==================== MODE A -- LIVE COMPETITION INTELLIGENCE ====================
 with tab_a:
-    st.subheader("Upcoming INDOT Letting")
-    st.caption("Sourced from a snapshot refreshed on a schedule by GitHub Actions — "
-               "this page never queries INDOT directly.")
+    st.markdown("### QuoteConvert / Live Competition")
+    st.caption("Live pre-bid competition intelligence sourced from INDOT.")
 
     if live["state"] == ui.APP_STATE_REFRESH_FAILED:
-        st.error(
-            "No valid live snapshot is available "
-            f"({live['read_error'] or 'snapshot failed schema validation'}). "
-            "This is not substituted with historical data — check that the "
-            "indot_live_refresh workflow has run successfully at least once."
-        )
+        _render_status_header("Unknown", "Refresh Failed", "Unknown")
+        with st.container(border=True):
+            st.markdown("**No valid live snapshot is available**")
+            st.write(live["read_error"] or "The snapshot failed schema validation.")
+            st.caption(
+                "This is not substituted with historical data — check that the "
+                "`indot_live_refresh` GitHub Actions workflow has run successfully at least once."
+            )
+        _render_data_integrity_note()
+
     elif live["state"] == ui.APP_STATE_NO_UPCOMING_LETTING:
-        st.info("No upcoming INDOT letting was found as of the last snapshot refresh. Check again later.")
+        _render_status_header("Unknown", "No Upcoming Letting", _format_timestamp_human(live.get("retrieved_at")))
+        with st.container(border=True):
+            st.markdown("**No upcoming INDOT letting found**")
+            st.write("As of the last snapshot refresh, INDOT had no upcoming letting listed.")
+            st.caption("QuoteConvert will automatically pick up the next upcoming letting during "
+                       "the next scheduled GitHub Actions refresh.")
+        _render_data_integrity_note()
+
     elif live["state"] == ui.APP_STATE_NO_PREBID_CANDIDATE_LIST:
-        st.metric("Letting date", live.get("letting_date", "unknown"))
-        st.info("Competition analysis will be available once INDOT publishes the Planholder List.")
-    else:  # APP_STATE_LIVE_CANDIDATES_AVAILABLE or APP_STATE_STALE_SNAPSHOT
-        if live["state"] == ui.APP_STATE_STALE_SNAPSHOT:
-            st.warning(f"⚠️ Live data may be stale — last refreshed {live['retrieved_at']}.")
-        st.metric("Letting date", live["letting_date"])
-        st.caption(
-            f"Source: [{live['letting_page_url']}]({live['letting_page_url']})  |  "
-            f"Planholder List retrieved {live['planholder_retrieved_at']}  |  "
-            f"Snapshot refreshed {live['retrieved_at']}"
+        _render_status_header(
+            _format_date_human(live.get("letting_date")),
+            "Awaiting Planholder List",
+            _format_timestamp_human(live.get("retrieved_at")),
         )
+        with st.container(border=True):
+            st.markdown("**Planholder List not published yet**")
+            st.write(
+                "INDOT has published the upcoming letting, but the current pre-bid "
+                "Planholder List is not available yet."
+            )
+            st.caption(
+                "QuoteConvert will automatically pick up the Planholder List during the "
+                "next scheduled GitHub Actions refresh."
+            )
+            st.markdown("**Next action:** Come back after the next refresh.")
+        _render_data_integrity_note()
+
+    else:  # APP_STATE_LIVE_CANDIDATES_AVAILABLE or APP_STATE_STALE_SNAPSHOT
+        is_stale = live["state"] == ui.APP_STATE_STALE_SNAPSHOT
+        _render_status_header(
+            _format_date_human(live["letting_date"]),
+            "Stale" if is_stale else "Live snapshot",
+            _format_timestamp_human(live["retrieved_at"]),
+        )
+        if is_stale:
+            st.warning(f"Live data may be stale — last refreshed {_format_timestamp_human(live['retrieved_at'])}.")
+
         contracts_live = live["contracts"]
         if not contracts_live:
             st.warning("Planholder List published, but no contracts could be parsed from it.")
         else:
-            table = []
-            for c in contracts_live:
-                n_valid = len(c["valid_for_bid"])
-                table.append({
-                    "Contract": c["contract_id"],
-                    "Pre-bid candidates": n_valid,
-                    "Competition": competition_level(n_valid) if n_valid > 0 else "—",
-                })
-            st.dataframe(pd.DataFrame(table), hide_index=True, use_container_width=True)
-            st.caption(f"{len(contracts_live)} contract(s) in this letting. Select a project in "
-                       "**Win-Probability Analysis** to run a prediction.")
+            m1, m2, m3 = st.columns(3)
+            m1.metric("Available contracts", len(contracts_live))
+            m2.metric("Total Valid-For-Bid candidates", live.get("valid_for_bid_count", "—"))
+            m3.metric("Planholder retrieved", _format_timestamp_human(live.get("planholder_retrieved_at")))
+
+            st.divider()
+            cid_options_a = [c["contract_id"] for c in contracts_live]
+            selected_cid_a = st.selectbox("Contract", cid_options_a, key="modea_cid")
+            sel = next(c for c in contracts_live if c["contract_id"] == selected_cid_a)
+            n_valid_a = len(sel["valid_for_bid"])
+
+            d1, d2 = st.columns(2)
+            d1.metric("Pre-bid candidates", n_valid_a)
+            d2.metric("Competition", competition_level(n_valid_a) if n_valid_a > 0 else "—")
+            if sel["valid_for_bid"]:
+                st.caption("Valid-For-Bid contractors:")
+                st.dataframe(
+                    pd.DataFrame({"Contractor": [c["contractor_name"] for c in sel["valid_for_bid"]]}),
+                    hide_index=True, use_container_width=True,
+                )
+            st.caption("Select a project in **Win-Probability Analysis** to run a prediction.")
+        _render_data_integrity_note()
+
+def _win_interpretation(p_win):
+    """Presentation only -- a plain-language label for the same p_win the
+    frozen engine already returned. Never implies certainty."""
+    if p_win >= 0.60:
+        return "QuoteConvert estimates a relatively strong win likelihood at this bid level."
+    if p_win >= 0.30:
+        return "QuoteConvert estimates a moderate win likelihood at this bid level."
+    return "QuoteConvert estimates a relatively low win likelihood at this bid level."
+
 
 # ==================== MODE B -- WIN-PROBABILITY ANALYSIS ====================
 with tab_b:
-    st.subheader("Win-Probability Analysis")
+    st.markdown("### Win-Probability Analysis")
+    st.caption("Estimate your bid's probability of winning using QuoteConvert's validated historical model.")
 
-    if live["state"] not in (ui.APP_STATE_LIVE_CANDIDATES_AVAILABLE, ui.APP_STATE_STALE_SNAPSHOT):
+    if live["state"] == ui.APP_STATE_NO_PREBID_CANDIDATE_LIST:
+        with st.container(border=True):
+            st.markdown("**Live prediction is waiting for the current Planholder List.**")
+            st.write(
+                "Competition and contractor selection will become available after the next "
+                "successful live refresh detects the published Planholder List."
+            )
+        _render_data_integrity_note()
+    elif live["state"] not in (ui.APP_STATE_LIVE_CANDIDATES_AVAILABLE, ui.APP_STATE_STALE_SNAPSHOT):
         st.info(
             "Win-probability analysis requires a live, published Planholder List for an "
             "upcoming letting. See the **Live Competition** tab for current status."
@@ -203,43 +301,51 @@ with tab_b:
             st.error("The live snapshot has no parsed contracts to run a prediction against.")
         else:
             if live["state"] == ui.APP_STATE_STALE_SNAPSHOT:
-                st.warning(f"⚠️ Live data may be stale — last refreshed {live['retrieved_at']}.")
+                st.warning(f"Live data may be stale — last refreshed {_format_timestamp_human(live['retrieved_at'])}.")
+
             selected_cid = st.selectbox("Project (upcoming INDOT contract)", cid_options, key="modeb_cid")
             info = internal_directory[selected_cid]
             candidates = info["all_candidates"]
             n_valid = sum(1 for c in candidates if c.get("valid_for_bid") == "Yes")
 
-            cand_names = {c["fein"]: f"{c.get('name', c['fein'])}" + ("" if c["valid_for_bid"] == "Yes" else " (not Valid For Bid)")
-                          for c in candidates if c.get("fein")}
-            if not cand_names:
-                st.error("No contractors with a FEIN could be parsed for this contract.")
-            else:
-                b1, b2 = st.columns(2)
-                with b1:
+            # ---- Live project context (values already in the snapshot only) ----
+            with st.container(border=True):
+                p1, p2, p3 = st.columns(3)
+                p1.metric("Letting Date", _format_date_human(live["letting_date"]))
+                p2.metric("Project / Contract", selected_cid)
+                p3.metric("Valid-For-Bid Candidates", n_valid)
+                p4, p5 = st.columns(2)
+                p4.metric("Competition Level", competition_level(n_valid) if n_valid > 0 else "—")
+                p5.metric("Snapshot Last Refreshed", _format_timestamp_human(live["retrieved_at"]))
+
+            cand_names = {c["fein"]: c.get("name", c["fein"])
+                          for c in candidates if c.get("fein") and c.get("valid_for_bid") == "Yes"}
+
+            # ---- Input area ----
+            with st.container(border=True):
+                st.markdown("**Your Bid Scenario**")
+                if not cand_names:
+                    st.error("No Valid-For-Bid contractors with a FEIN could be parsed for this contract.")
+                    selected_fein = None
+                else:
                     selected_fein = st.selectbox(
                         "Contractor", list(cand_names.keys()), format_func=lambda f: cand_names[f], key="modeb_fein",
                     )
-                with b2:
-                    st.metric("Competition", competition_label(n_valid, competition_level(n_valid) if n_valid > 0 else "—"))
 
-            st.markdown("**Reference Estimate ($)**")
-            st.caption(
-                "Enter the estimate you are using for this project. QuoteConvert's historical "
-                "model was trained using INDOT Engineer's Estimates; using a different reference "
-                "estimate may affect calibration."
-            )
-            reference_estimate = st.number_input(
-                "Reference Estimate ($)", min_value=0.0, value=0.0, step=1000.0, format="%.2f",
-                key="modeb_ref", label_visibility="collapsed",
-            )
-            bid_amount = st.number_input(
-                "Candidate Bid ($)", min_value=0.0, value=0.0, step=1000.0, format="%.2f", key="modeb_bid",
-            )
+                reference_estimate = st.number_input(
+                    "Reference Estimate ($)", min_value=0.0, value=0.0, step=1000.0, format="%.2f",
+                    key="modeb_ref",
+                    help=("Enter the estimate you are using as the project's reference value. "
+                          "QuoteConvert's historical model was trained using INDOT Engineer's "
+                          "Estimates; a different reference estimate may affect calibration."),
+                )
+                bid_amount = st.number_input(
+                    "Candidate Bid ($)", min_value=0.0, value=0.0, step=1000.0, format="%.2f", key="modeb_bid",
+                    help="Enter the bid amount you are considering.",
+                )
 
-            cstatus = ui.contractor_status(candidates, selected_fein)
+            cstatus = ui.contractor_status(candidates, selected_fein) if selected_fein else "not_found"
             pred_state = ui.determine_prediction_state(reference_estimate or None, bid_amount or None)
-
-            st.divider()
 
             if cstatus != "valid":
                 st.error(
@@ -248,11 +354,10 @@ with tab_b:
                 )
             elif pred_state == ui.STATE_REFERENCE_ESTIMATE_REQUIRED:
                 st.warning(
-                    "Enter a Reference Estimate to enable the win-probability panel. Competition "
-                    "information above remains available without it."
+                    "Enter a Reference Estimate greater than zero to enable the win-probability panel."
                 )
             elif pred_state == ui.STATE_BID_AMOUNT_REQUIRED:
-                st.warning("Enter a Candidate Bid to run a win-probability prediction.")
+                st.warning("Enter a Candidate Bid greater than zero to run a win-probability prediction.")
             else:
                 candidate_field = candidates
                 project_info = {"engineers_estimate": reference_estimate, "district": info["district"]}
@@ -264,32 +369,37 @@ with tab_b:
                 if result["status"] != "ok":
                     st.error(f"No probability available — {result.get('reason', result['status'])}")
                 else:
-                    st.markdown(
-                        f"<div style='text-align:center;padding:0.8em 0;'>"
-                        f"<div style='font-size:1.05em;color:gray;'>Estimated probability of winning</div>"
-                        f"<div style='font-size:3.4em;font-weight:700;line-height:1.1;'>{result['p_win']*100:.1f}%</div>"
-                        f"</div>", unsafe_allow_html=True,
-                    )
-                    r1, r2, r3 = st.columns(3)
-                    r1.metric("Bid / Reference Estimate", f"{result['bid_ratio']*100:.1f}%")
-                    r2.metric("Competition", result["competition_level"])
-                    r3.metric("Data quality", result["data_quality"])
+                    with st.container(border=True):
+                        st.markdown(
+                            f"<div style='text-align:center;padding:0.8em 0;'>"
+                            f"<div style='font-size:1.05em;color:gray;'>Estimated Probability of Winning</div>"
+                            f"<div style='font-size:3.4em;font-weight:700;line-height:1.1;'>{result['p_win']*100:.1f}%</div>"
+                            f"</div>", unsafe_allow_html=True,
+                        )
+                        st.caption(_win_interpretation(result["p_win"]))
+                        r1, r2, r3 = st.columns(3)
+                        r1.metric("Bid / Reference Estimate", f"{result['bid_ratio']*100:.1f}%")
+                        r2.metric("Competition", result["competition_level"])
+                        r3.metric("Data Quality", result["data_quality"])
 
                     this_ratio = result["bid_ratio"]
                     if not (SUPPORTED_BAND[0] <= this_ratio <= SUPPORTED_BAND[1]):
-                        st.caption("⚠️ This bid is outside the range most represented in the historical data. "
+                        st.caption("This bid is outside the range most represented in the historical data. "
                                    "The estimate may be less reliable.")
                     if result.get("unusual_project"):
-                        st.caption("ℹ️ This project's size is unusual for its district — the estimate may be less reliable.")
+                        st.caption("This project's size is unusual for its district — the estimate may be less reliable.")
                     if result.get("data_entry_warning"):
-                        st.caption("⚠️ This bid amount is far from the Reference Estimate — double-check the entered value.")
+                        st.caption("This bid amount is far from the Reference Estimate — double-check the entered value.")
+                    st.caption("**This is an estimate, not a guarantee.**")
                     st.caption(
-                        "Based on historical bidding patterns and the current published pre-bid "
-                        "competition field. **This is an estimate, not a guarantee.**"
+                        "Prediction uses the current live pre-bid contractor field and the reference "
+                        "estimate you provide. QuoteConvert does not use post-bid results for live prediction."
                     )
 
                     st.divider()
-                    st.subheader("Bid Probability Curve")
+                    st.markdown("**How Bid Level Changes Estimated Win Probability**")
+                    st.caption("Lower bid ratios generally correspond to higher estimated win "
+                               "probability in the validated model.")
                     DEFAULT_GRID = [0.75, 0.80, 0.85, 0.90, 0.95, 1.00, 1.05, 1.10]
                     grid = list(DEFAULT_GRID)
                     if this_ratio < grid[0] or this_ratio > grid[-1]:
@@ -322,7 +432,8 @@ with tab_b:
 
                     mono_ok = all(curve_df["p_win_raw"].values[i] >= curve_df["p_win_raw"].values[i + 1] - 1e-9
                                   for i in range(len(curve_df) - 1))
-                    st.caption(f"{'✅' if mono_ok else '⚠️'} Curve monotonic (higher bid never increases win probability)")
+                    st.caption(f"{'Monotonic' if mono_ok else 'Not monotonic'} — higher bid never increases win probability" if mono_ok
+                               else "⚠️ Curve monotonicity check failed")
                     st.caption(f"Model version: `{result['model_version']}`")
 
 # ==================== HISTORICAL DEMO (regression test) ====================
