@@ -77,18 +77,23 @@ jobs:
             exit 1
           fi
 
-            - name: Extract PDF text
+      - name: Extract PDF text
         shell: bash
         run: |
           set -euxo pipefail
 
+          echo "Installing PDF text extraction utility..."
           sudo apt-get update
           sudo apt-get install -y poppler-utils
+
+          echo
+          echo "Extracting PDF text..."
 
           pdftotext -layout \
             bidders_list_07_08_2026.pdf \
             bidders_list_07_08_2026.txt
 
+          echo
           echo "Extracted text lines:"
           wc -l bidders_list_07_08_2026.txt
 
@@ -128,7 +133,10 @@ jobs:
 
           echo
           echo "Downloaded files:"
-          ls -lh july_8_2026.html bidders_list_07_08_2026.pdf bidders_list_07_08_2026.txt
+          ls -lh \
+            july_8_2026.html \
+            bidders_list_07_08_2026.pdf \
+            bidders_list_07_08_2026.txt
 
       - name: Upload live-data evidence
         uses: actions/upload-artifact@v4
