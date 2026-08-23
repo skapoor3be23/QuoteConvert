@@ -106,17 +106,36 @@ jobs:
         run: |
           set -euxo pipefail
 
-          echo "Contract IDs found:"
-          grep -Eo '[A-Z]{1,3}-[0-9]{4,6}-[A-Z0-9]+' \
+          echo "Contracts detected from PDF:"
+          grep -Eo '[A-Z]{1,3}[[:space:]]*-[[:space:]]*[0-9]{4,6}[[:space:]]*-[[:space:]]*[A-Z0-9]+' \
             bidders_list_07_08_2026.txt |
+            sed 's/[[:space:]]//g' |
             sort -u || true
 
           echo
-          echo "Valid For Bid occurrences:"
+          echo "Checking example live contract: R-43365-A"
+
+          awk '
+            /Contract[[:space:]]+R[[:space:]]*-43365-A/ {capture=1}
+            capture && /Contract[[:space:]]+/ && !/R[[:space:]]*-43365-A/ {exit}
+            capture {print}
+          ' bidders_list_07_08_2026.txt |
+            sed -n '1,120p'
+
+          echo
+          echo "Candidate rows containing Valid For Bid = Yes:"
+          awk '
+            /Contract[[:space:]]+R[[:space:]]*-43365-A/ {capture=1}
+            capture && /Contract[[:space:]]+/ && !/R[[:space:]]*-43365-A/ {exit}
+            capture && /Yes[[:space:]]*$/ {print}
+          ' bidders_list_07_08_2026.txt || true
+
+          echo
+          echo "Total Valid For Bid occurrences in full document:"
           grep -i -c "Valid For Bid" bidders_list_07_08_2026.txt || true
 
           echo
-          echo "Proposal Planholder List occurrences:"
+          echo "Total Proposal Planholder List pages:"
           grep -i -c "PROPOSAL PLANHOLDER LIST" bidders_list_07_08_2026.txt || true
 
       - name: Save provenance
