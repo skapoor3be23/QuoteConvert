@@ -65,29 +65,44 @@ An earlier version of the model ranked candidates well (i.e., correctly identifi
 
 **AUC ≈ 0.98 does not mean "98% accurate."** It means: if you randomly pick one winning bid and one losing bid from the test set, the model ranks the winner higher about 98% of the time. Top-1 accuracy (≈90%) is the closer analogue to "accuracy" in everyday language, and is reported separately for exactly that reason.
 
-## J. Product Workflow
+## J. Product Workflow (V1)
 
-1. Select a project (in the current demo, from historical INDOT lettings)
-2. The system loads Engineer's Estimate, district, and the project's real pre-bid candidate list
-3. Select the contractor (from that project's actual registered candidates)
-4. Enter a hypothetical bid amount
-5. Receive: estimated P(win), a bid-probability curve across nearby bid amounts, a competition-level indicator (e.g. *"High competition — 9 pre-bid candidates"*), and a data-quality state (Standard / Limited history / Unavailable)
+QuoteConvert V1 is **live INDOT competition intelligence with a validated bid win-probability engine** — not a fully autonomous "P(win) from INDOT data alone" generator. That distinction matters because of one verified fact: **INDOT does not publish its Engineer's Estimate before bidding closes** (checked directly against every plausible pre-bid document — Planholder List, Notice to Contractors, SOPI — none contain it; see K.2). So V1 splits into two modes:
 
-Demonstrated end-to-end with a real historical example: contract `B-40989-A` (Dec 13, 2023 letting), reconstructed strictly as it would have appeared before its own bid deadline, returning a coherent, monotonic, well-calibrated result (P(win) = 93.2% for the eventual actual winner's real bid).
+**Deployment architecture — Streamlit is decoupled from INDOT.** Local testing confirmed Streamlit's own outbound connection to `www.in.gov` is not reliable, while GitHub Actions' is (validated live, ~15s Stage 1 runs). So a scheduled GitHub Actions workflow (`indot_live_refresh.yml`) is the *only* component that talks to INDOT: it runs discovery + Planholder ingestion, then writes a versioned **live snapshot** (`data/live_snapshot.json`, no FEIN/PII, committed to git only when its content actually changed). The Streamlit app reads that snapshot from local disk — it never calls INDOT directly, so it keeps working even if `www.in.gov` is completely unreachable from wherever the app happens to run. A second, non-public file (`data/live_snapshot_internal.json`) carries the FEIN each contractor needs to be matched against their own bidding history inside the frozen inference engine; it is read only by Mode B's prediction logic, never rendered.
+
+**Mode A — Live Competition Intelligence** (fully automatic, no user input required):
+1. The system automatically discovers the next upcoming INDOT letting(s) and checks whether INDOT has published that letting's Planholder List
+2. If published, it downloads and parses the real, current, pre-bid "Valid For Bid" candidate list for every contract in that letting
+3. It shows, per contract: pre-bid candidate count and competition level (Low/Moderate/High) — entirely from live, automatically-collected data
+
+**Mode B — Win-Probability Analysis** (requires three user inputs):
+1. Contractor — chosen from that project's live, currently-published Valid-For-Bid list (not free text)
+2. Reference Estimate ($) — supplied by the contractor, since INDOT's own Engineer's Estimate is not publicly available before bidding (the historical model was trained on INDOT's EE; a different reference estimate may affect calibration — this is disclosed directly in the UI)
+3. Candidate Bid ($) — the amount being considered
+4. The system computes `bid_ratio = candidate_bid / reference_estimate` and passes it, unmodified, into the frozen inference engine, returning: estimated P(win), Bid/Reference-Estimate ratio, competition level, a data-quality state, and a bid-probability curve across nearby bid amounts
+
+Regression-verified with a real historical example: contract `B-40989-A` (Dec 13, 2023 letting), reconstructed strictly as it would have appeared before its own bid deadline using its real Engineer's Estimate, returning a coherent, monotonic, well-calibrated result (P(win) = 93.2% for the eventual actual winner's real bid) — kept in the app as a regression-test tab, not part of the V1 product surface.
 
 ## K. Limitations
 
-1. **Live INDOT access is currently unavailable** from every environment tested this project (see L).
-2. **V1 operates in historical/as-of demo mode** — real predictions on genuinely upcoming projects are not yet live.
-3. **Competition-aware prediction absolutely requires the pre-bid candidate list** — if INDOT has not yet published it for a project, the system returns no probability rather than a guess.
-4. **Private contractor economics are not observable** — internal cost structure, capacity, and strategy are not visible in any public data source and cannot be modeled directly.
-5. **Extreme or unusual bid ratios may be less reliable** — the model flags bids outside the historically well-represented range rather than pretending equal confidence everywhere.
-6. **This is a probability estimate, not a guarantee.** No model can eliminate genuine auction uncertainty.
-7. **No "optimal bid" recommendation is included in V1** — see Section on this decision below.
+1. **INDOT does not publish its Engineer's Estimate before bidding** — verified directly, not assumed (see L). V1 therefore asks the contractor for a Reference Estimate rather than fabricating or scraping a post-bid figure.
+2. **Using a Reference Estimate other than INDOT's own Engineer's Estimate can affect calibration** — the historical model was trained and validated using INDOT's own EE; a materially different reference estimate is disclosed to the user as a source of possible error, not silently absorbed.
+3. **Competition-aware analysis absolutely requires INDOT to have published the Planholder List for a project** — if it has not yet been published, the system says so explicitly rather than guessing or reusing an older candidate list.
+4. **Automatic discovery is bounded to the nearest upcoming letting for full per-contract detail** — by design, to avoid unnecessary requests to INDOT (see DOCS.md architecture); additional upcoming lettings are shown with less detail until they become the nearest one.
+5. **Live Competition reflects the last successful snapshot refresh, not the current instant** — the app shows the snapshot's own retrieval timestamp, and flags it explicitly ("Live data may be stale.") once it exceeds a freshness threshold, rather than silently presenting old data as current.
+6. **Private contractor economics are not observable** — internal cost structure, capacity, and strategy are not visible in any public data source and cannot be modeled directly.
+7. **Extreme or unusual bid ratios may be less reliable** — the model flags bids outside the historically well-represented range rather than pretending equal confidence everywhere.
+8. **This is a probability estimate, not a guarantee.** No model can eliminate genuine auction uncertainty.
+9. **No "optimal bid" recommendation is included in V1** — see Section on this decision below.
 
-## L. Live-Data Limitation (Detail)
+## L. Engineer's Estimate: Verified Not Publicly Available Pre-Bid
 
-Three INDOT access routes were tested directly from this project's execution environment: the main INDOT site (network-level connection failure — TCP handshake never completes), and two internal subdomains used for bid viewing (both return a clean, fast HTTP 403 — genuine access control, not something to be bypassed). This is a real, precisely diagnosed infrastructure gap, not a data-availability problem: the historical connector code and parsing logic are built and validated against 77 real archived INDOT documents. What remains is executing that same code from an environment with actual outbound access to INDOT's live site.
+An exhaustive, direct check (not an assumption) of every plausible pre-bid INDOT source — the Proposal Planholder List, the Notice to Contractors, the Schedule of Pay Items (SOPI) — found the Engineer's Estimate in **none of them**; it appears only in the *post-bid* Official Bid Tabulation. A follow-up research experiment tested whether a "Shadow EE" could be predicted from pre-bid project-scope features (SOPI item counts/quantities) well enough to substitute for the real thing: it could not — the best model available (RandomForest) still had 36% median absolute percentage error, and substituting it into the frozen P(win) engine dropped pooled AUC from 0.725 to 0.581 on the same held-out test population (a decisive degradation, not a minor one). A "skip EE entirely" alternative was also tested and rejected — it achieves near-perfect *within-contract* ranking only by mechanically exploiting "lowest raw dollar bid wins," which fails completely (AUC ≈ 0.55) at the actual job of comparing bids across differently-sized projects. Both experiments are why V1 asks the contractor for a Reference Estimate instead of pretending to obtain INDOT's own.
+
+## L2. Snapshot Freshness, Provenance, and No Silent Fallback
+
+Every snapshot records its own `retrieved_at` timestamp, the Planholder document's own retrieval timestamp and SHA-256 checksum, and the source URLs used to obtain it — all shown directly in the Live Competition tab. If the scheduled refresh has not produced a snapshot at all (missing file), or produces one that fails schema validation, the app shows an explicit `refresh_failed` state rather than falling back to the historical dataset. If the most recent successful snapshot is older than the freshness threshold, the app shows it with an explicit "Live data may be stale" warning rather than silently presenting it as current. A snapshot showing `no_prebid_candidate_list` or `no_upcoming_letting` is never replaced with an older, previously-cached candidate list.
 
 ## M. How to Run Locally
 
@@ -95,7 +110,16 @@ Three INDOT access routes were tested directly from this project's execution env
 cd indot
 python3 -m streamlit run app.py
 ```
-Requires: `pandas`, `numpy`, `streamlit` (see the module imports; no other dependencies). Opens a local web UI defaulting to the validated demo contract `B-40989-A`.
+Requires: `pandas`, `numpy`, `streamlit`, `pypdf` (see the module imports; no other dependencies). Opens a local web UI with three tabs: **Live Competition** (Mode A), **Win-Probability Analysis** (Mode B), and a **Historical Demo** regression-test tab defaulting to the validated demo contract `B-40989-A`.
+
+**The app itself never calls INDOT.** Modes A and B read `data/live_snapshot.json` (public) and `data/live_snapshot_internal.json` (adds FEIN, used only internally for Mode B's inference call) from local disk. Those files are produced by a separate scheduled process:
+
+```bash
+cd indot
+python3 generate_snapshot.py   # requires real outbound access to www.in.gov -- run via GitHub Actions
+```
+
+The GitHub Actions workflow `.github/workflows/indot_live_refresh.yml` runs this daily (and on manual `workflow_dispatch`), committing the two snapshot files back to the repo **only when their content actually changed**. It never runs inference and is the only component in this project with INDOT network access. If no snapshot has ever been generated, both tabs show an explicit `refresh_failed` state — never a silent fallback to historical data.
 
 ---
 
@@ -107,13 +131,13 @@ An earlier phase of this project directly tested expected-value (EV) maximizatio
 
 # Final Project Summary
 
-**One paragraph**: QuoteConvert estimates a contractor's probability of winning a public highway construction bid before submission, using real, verified, pre-bid competitor registration data from Indiana's DOT combined with each contractor's own historical bidding pattern — validated on 2,027 real contracts with AUC ≈ 0.98 and ~90% top-1 winner accuracy, and packaged as a working local demo; the one remaining gap before live deployment is outbound network access to INDOT's site from a production environment.
+**One paragraph**: QuoteConvert automatically discovers upcoming INDOT lettings and their real, live, pre-bid competitor registration lists, then estimates a contractor's probability of winning a proposed bid against that live competitive field — using an auction-consistent statistical model validated on 2,027 real historical contracts (AUC ≈ 0.98, ~90% top-1 winner accuracy); because INDOT does not publish its own Engineer's Estimate before bidding closes (verified directly, and confirmed unfixable by prediction — see K/L), the contractor supplies their own Reference Estimate for the ratio calculation, with that tradeoff disclosed plainly in the product.
 
 **Three paragraphs**:
 Contractors bidding on public construction projects currently have no data-driven way to estimate their odds before submitting a price — public bid-tabulation data is almost always published only after bidding closes, by which point it's useless for the decision at hand.
 
 QuoteConvert's core discovery, made after testing multiple states and multiple modeling approaches, was that Indiana's DOT uniquely publishes a genuine pre-bid list of registered competitors for each project — and that this single piece of information, combined with each contractor's own historical bidding behavior through an auction-consistent statistical model, is dramatically more predictive than any generic feature-engineering approach tried. A calibration-layer fix (per-contract normalization plus temperature scaling) further closed a real gap between the model's *ranking* quality and the *trustworthiness* of its raw probabilities.
 
-The result, validated on 2,027 real contracts with a genuinely held-out 431-contract test set, is a working local demo that takes a real historical project, contractor, and bid amount and returns a calibrated win probability and bid curve — with the one remaining step before live production being network access to INDOT's site from wherever the system is actually deployed.
+The result is a working product that automatically discovers upcoming INDOT lettings and their live competition field with zero user input (Mode A), and lets a contractor enter a Reference Estimate and candidate bid to get a calibrated win probability and bid curve against that live field (Mode B) — deliberately not pretending to auto-obtain INDOT's own Engineer's Estimate, since a dedicated experiment confirmed that predicting it well enough to substitute safely is not currently achievable (see L).
 
-**30-second version**: *"QuoteConvert estimates a construction contractor's probability of winning a public bid before they submit it. The breakthrough was finding that Indiana's DOT publishes a real, verified list of who's registered to compete on each project before bidding closes — that single fact, combined with each contractor's own bidding history, drove the model from roughly a coin-flip's worth of useful signal to a validated 90% top-1 accuracy across 2,000+ real contracts. It's built and working as a local demo today; the only thing standing between this and a live tool is getting our servers real network access to INDOT's website."*
+**30-second version**: *"QuoteConvert automatically watches INDOT for upcoming projects and shows a contractor the real, live list of who's registered to compete — before bidding closes. Enter your own cost estimate and a candidate bid, and it returns a calibrated probability of winning, validated on over 2,000 real historical contracts at 90% top-1 accuracy. It doesn't guess INDOT's own estimate — we tested that directly and it degrades the result, so we ask the contractor for theirs instead and say so plainly."*

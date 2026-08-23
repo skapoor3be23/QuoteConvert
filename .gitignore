@@ -4,6 +4,7 @@ __pycache__/
 indot/raw/
 indot/sopi_raw/
 indot/__pycache__/
+indot/live_cache/
 
 # Research-only data / artifacts
 *.pkl

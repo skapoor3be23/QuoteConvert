@@ -1,0 +1,44 @@
+name: INDOT Live Snapshot Refresh
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 12 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pypdf pandas numpy
+
+      - name: Generate live snapshot (Stage 1 discovery + Stage 2 ingestion)
+        working-directory: indot
+        run: python3 generate_snapshot.py
+
+      - name: Commit snapshot only if content changed
+        working-directory: indot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/live_snapshot.json data/live_snapshot_internal.json
+          if git diff --cached --quiet; then
+            echo "Snapshot content unchanged -- no commit created."
+          else
+            git commit -m "Refresh live INDOT snapshot"
+            git push
+          fi
