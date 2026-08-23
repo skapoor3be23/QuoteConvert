@@ -6,6 +6,7 @@ on:
 jobs:
   discover-indot:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - name: Checkout repository
@@ -19,16 +20,17 @@ jobs:
       - name: Install discovery dependencies
         shell: bash
         run: |
+          set -euxo pipefail
           python -m pip install --upgrade pip
-          python -m pip install pypdf pandas numpy
+          python -m pip install pypdf
 
-      - name: Run automatic INDOT discovery
+      - name: Run bounded INDOT discovery
         working-directory: indot
         shell: bash
         run: |
           set -euxo pipefail
 
-          echo "Starting automatic INDOT letting discovery..."
+          echo "Starting bounded INDOT letting discovery..."
           echo
 
           python - <<'PY'
@@ -39,40 +41,31 @@ jobs:
 
           print()
           print("=" * 80)
-          print("DISCOVERY SUMMARY")
+          print("INDOT UPCOMING DISCOVERY")
           print("=" * 80)
 
           print(f"Archive retrieval timestamp: {index_entry.get('retrieval_timestamp')}")
           print(f"Archive checksum: {index_entry.get('checksum')}")
-          print(f"Letting pages discovered: {len(results)}")
-
-          upcoming = [
-              r for r in results
-              if r.get("letting_date")
-          ]
-
-          available = [
-              r for r in results
-              if r.get("planholder_list_available") is True
-          ]
-
-          print(f"Records with letting dates: {len(upcoming)}")
-          print(f"Records with Planholder Lists: {len(available)}")
+          print(f"Upcoming results returned: {len(results)}")
 
           print()
-          print("ALL RESULTS")
+          print("RESULTS")
           print("=" * 80)
 
-          for result in results:
-              print(json.dumps(result, indent=2, sort_keys=True))
+          for i, result in enumerate(results, start=1):
+              print(f"\n--- Letting {i} ---")
+              print(f"Letting date: {result.get('letting_date')}")
+              print(f"Letting page: {result.get('letting_page_url')}")
+              print(
+                  f"Planholder available: "
+                  f"{result.get('planholder_list_available')}"
+              )
 
-          print()
-          print("=" * 80)
-          print("AVAILABLE PLANHOLDER LISTS")
-          print("=" * 80)
+              if result.get("planholder_url"):
+                  print(f"Planholder URL: {result.get('planholder_url')}")
 
-          for result in available:
-              print(json.dumps(result, indent=2, sort_keys=True))
+              if result.get("reason"):
+                  print(f"Reason: {result.get('reason')}")
 
           with open("discovery_results.json", "w", encoding="utf-8") as f:
               json.dump(
@@ -86,21 +79,10 @@ jobs:
               )
 
           print()
+          print("=" * 80)
           print("Saved discovery_results.json")
+          print("=" * 80)
           PY
-
-      - name: Show cached files
-        working-directory: indot
-        shell: bash
-        run: |
-          set -euxo pipefail
-
-          echo "Cache contents:"
-          if [ -d "live_cache" ]; then
-            find live_cache -maxdepth 1 -type f -printf '%f\n' | sort
-          else
-            echo "No live_cache directory was created."
-          fi
 
       - name: Upload discovery evidence
         uses: actions/upload-artifact@v4

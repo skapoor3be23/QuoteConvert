@@ -10,11 +10,27 @@ bypassed).
 
 This module is therefore INFRASTRUCTURE. Its pure logic (URL resolution, date
 parsing, dedup, schema shaping) is unit-tested without network access in
-tests/test_live_connector.py. The network-dependent functions (fetch_with_cache,
-discover_upcoming_lettings) have NOT been run against live INDOT data from this
-environment -- that validation is intentionally deferred to a GitHub Actions run
-with real outbound access. Do not treat this module as live-validated until that
-run has actually happened.
+tests/test_live_connector.py. The network-dependent functions have NOT been run
+against live INDOT data from this environment -- that validation is intentionally
+deferred to a GitHub Actions run with real outbound access. Do not treat this
+module as live-validated until that run has actually happened.
+
+TWO-STAGE ARCHITECTURE (this design was forced by a real failure: the first GitHub
+Actions run of the single-stage version was cancelled after 10m42s still running,
+because it downloaded a full Planholder PDF for every discovered letting link
+before checking whether that letting was even upcoming -- see the final report
+for the exact cause):
+
+  Stage 1 -- LETTING DISCOVERY (discover_upcoming_lettings):
+    Fetches the archive index once, visits each candidate letting page ONCE with a
+    bounded 15s timeout, reads only its date and (if upcoming) whether a Planholder
+    PDF link exists. Never downloads or parses a PDF. Bounded to the first
+    MAX_UPCOMING_LETTINGS (5) upcoming lettings, sorted ascending by date.
+
+  Stage 2 -- PLANHOLDER INGESTION (get_planholder_list / _candidate_count_for_letting):
+    For ONE specific letting the caller has already chosen from Stage 1's output,
+    downloads and parses its Planholder PDF (reusing parse_indot.py). This is the
+    expensive step and is never invoked automatically for every discovered letting.
 """
 import urllib.request
 import urllib.parse
@@ -34,6 +50,9 @@ LETTING_ARCHIVE_URL = "https://www.in.gov/indot/doing-business-with-indot/home/c
 
 BPH_PATTERNS = ["b-and-ph", "b_and_ph", "bidders_list", "bidderlist", "bidderslist",
                 "b_ph", "b-ph", "bidders-list", "bidders list", "and-ph", "and_ph"]
+
+MAX_UPCOMING_LETTINGS = 5
+DISCOVERY_TIMEOUT_SECONDS = 15
 
 # Matches a date like "September 2, 2026" or "Wednesday, September 2, 2026" appearing
 # anywhere in a letting page's text (title, heading, or body) -- reused for BOTH the
@@ -131,16 +150,18 @@ def _save_cache_index(idx):
     json.dump(idx, open(CACHE_INDEX, "w"), indent=2)
 
 
-def fetch_with_cache(url, force_refresh=False):
+def fetch_with_cache(url, force_refresh=False, timeout=30):
     """Fetch a URL, caching by content checksum. Returns (bytes, cache_entry).
     Never silently reuses a stale document -- always re-fetches and compares checksum;
     only the LOCAL FILE WRITE is skipped if the checksum is unchanged.
     `url` may be relative; it is resolved against BASE_URL first (minimal fix,
-    fetch_with_cache's caching behavior itself is unchanged)."""
+    fetch_with_cache's caching behavior itself is unchanged). `timeout` defaults to
+    30s for Stage 2 (PDF ingestion, unchanged); Stage 1 discovery passes a shorter,
+    bounded timeout explicitly -- see DISCOVERY_TIMEOUT_SECONDS."""
     url = resolve_url(BASE_URL, url)
     idx = _load_cache_index()
     req = urllib.request.Request(url, headers=UA)
-    data = urllib.request.urlopen(req, timeout=30).read()
+    data = urllib.request.urlopen(req, timeout=timeout).read()
     checksum = hashlib.sha256(data).hexdigest()
     now = datetime.now(timezone.utc).isoformat()
 
@@ -193,17 +214,35 @@ def _candidate_count_for_letting(pdf_path):
     return total
 
 
-def discover_upcoming_lettings(today=None):
-    """Crawl the official INDOT letting-archives index and return every discovered
-    UPCOMING letting (letting date extracted from each page's own text, not the URL,
-    and not yet passed) with its Planholder status. NOT executed against live data
-    from this environment -- see the module docstring.
+def _discovery_record(letting_date, letting_url, planholder_list_available,
+                       planholder_url=None, reason=None):
+    """Builds a Stage-1 result record with exactly the required schema. No
+    candidate_count, retrieval_timestamp, or checksum here -- those only exist
+    once a PDF is actually downloaded, which Stage 1 never does."""
+    rec = {
+        "letting_date": letting_date.isoformat() if letting_date else None,
+        "letting_page_url": letting_url,
+        "planholder_list_available": planholder_list_available,
+        "planholder_url": planholder_url,
+    }
+    if reason is not None:
+        rec["reason"] = reason
+    return rec
 
-    Returns a list of dicts matching exactly:
+
+def discover_upcoming_lettings(today=None, max_results=MAX_UPCOMING_LETTINGS):
+    """STAGE 1 ONLY: discover up to `max_results` upcoming lettings. Bounded and fast
+    by design -- never downloads or parses a Planholder PDF (that is Stage 2, see
+    get_planholder_list / _candidate_count_for_letting, called explicitly by the
+    caller for ONE chosen letting afterward). NOT executed against live data from
+    this environment -- see the module docstring.
+
+    Returns (results, index_entry) where each result matches exactly:
       letting_date, letting_page_url, planholder_list_available, planholder_url,
-      candidate_count, retrieval_timestamp, checksum, reason (only if unavailable/error)
+      reason (only if unavailable/error)
+    sorted ascending by letting_date, capped at `max_results` records.
     """
-    html, index_entry = fetch_with_cache(LETTING_ARCHIVE_URL)
+    html, index_entry = fetch_with_cache(LETTING_ARCHIVE_URL, timeout=DISCOVERY_TIMEOUT_SECONDS)
     html_text = html.decode("utf-8", errors="ignore")
 
     raw_links = re.findall(r'href="([^"]*letting[^"]*)"', html_text, re.I)
@@ -211,78 +250,48 @@ def discover_upcoming_lettings(today=None):
     resolved_links = [l for l in resolved_links if not is_archive_index_url(l)]
     letting_urls = dedupe_urls(resolved_links)
 
-    results = []
+    upcoming = []
     for letting_url in letting_urls:
         try:
-            page_html, page_entry = fetch_with_cache(letting_url)
+            page_html, _page_entry = fetch_with_cache(letting_url, timeout=DISCOVERY_TIMEOUT_SECONDS)
         except Exception as e:
-            results.append({
-                "letting_date": None,
-                "letting_page_url": letting_url,
-                "planholder_list_available": False,
-                "planholder_url": None,
-                "candidate_count": None,
-                "retrieval_timestamp": None,
-                "checksum": None,
-                "reason": f"fetch_error: {e}",
-            })
+            # one failed page is recorded but does NOT stop discovery of the rest
+            upcoming.append((None, _discovery_record(
+                None, letting_url, False, reason=f"fetch_error: {e}")))
             continue
 
         page_text = page_html.decode("utf-8", errors="ignore")
         letting_date = extract_letting_date(page_text)
         if not is_upcoming(letting_date, today=today):
-            # not an upcoming letting (past, or date unrecoverable) -- skip, not an error
+            # past letting, or date unrecoverable -- skip silently, not an error
             continue
 
-        try:
-            pdf_data, pdf_entry = get_planholder_list(letting_url)
-        except Exception as e:
-            results.append({
-                "letting_date": letting_date.isoformat() if letting_date else None,
-                "letting_page_url": letting_url,
-                "planholder_list_available": False,
-                "planholder_url": None,
-                "candidate_count": None,
-                "retrieval_timestamp": page_entry.get("retrieval_timestamp"),
-                "checksum": None,
-                "reason": f"fetch_error: {e}",
-            })
-            continue
+        # Planholder DETECTION only: inspect the already-fetched HTML for a link,
+        # resolve it -- never fetch the PDF itself in Stage 1.
+        bph_link = find_planholder_link(page_text)
+        if bph_link:
+            bph_url = resolve_url(letting_url, bph_link)
+            upcoming.append((letting_date, _discovery_record(letting_date, letting_url, True, planholder_url=bph_url)))
+        else:
+            upcoming.append((letting_date, _discovery_record(
+                letting_date, letting_url, False, reason="no_prebid_candidate_list")))
 
-        if pdf_data is None:
-            results.append({
-                "letting_date": letting_date.isoformat() if letting_date else None,
-                "letting_page_url": letting_url,
-                "planholder_list_available": False,
-                "planholder_url": None,
-                "candidate_count": None,
-                "retrieval_timestamp": page_entry.get("retrieval_timestamp"),
-                "checksum": None,
-                "reason": pdf_entry.get("reason", "no_prebid_candidate_list"),
-            })
-            continue
-
-        candidate_count = _candidate_count_for_letting(pdf_entry["local_path"])
-        results.append({
-            "letting_date": letting_date.isoformat(),
-            "letting_page_url": letting_url,
-            "planholder_list_available": True,
-            "planholder_url": pdf_entry["source_url"],
-            "candidate_count": candidate_count,
-            "retrieval_timestamp": pdf_entry["retrieval_timestamp"],
-            "checksum": pdf_entry["checksum"],
-        })
-
+    # sort ascending by date; records with no recoverable date (fetch errors) sort last
+    upcoming.sort(key=lambda pair: (pair[0] is None, pair[0]))
+    results = [rec for _date, rec in upcoming[:max_results]]
     return results, index_entry
 
 
 def run_discovery_report():
     """Explicit, callable entry point for a live test run (e.g. from a GitHub Actions
-    step). Never called on import -- only invoked when explicitly requested."""
+    step). Never called on import -- only invoked when explicitly requested.
+    Stage 1 ONLY -- does not download or parse any Planholder PDF."""
     results, index_entry = discover_upcoming_lettings()
-    print(f"discovered {len(results)} upcoming letting page(s)")
+    print(f"discovered {len(results)} upcoming letting(s) (capped at {MAX_UPCOMING_LETTINGS})")
     for r in results:
-        print(json.dumps(r, indent=2))
+        print(f"  {r['letting_date']}  {r['letting_page_url']}  "
+              f"planholder_available={r['planholder_list_available']}  "
+              f"planholder_url={r.get('planholder_url')}  reason={r.get('reason')}")
     return results
 
 

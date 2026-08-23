@@ -1,6 +1,11 @@
-import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+import sys
+from pathlib import Path
+TEST_DIR = Path(__file__).resolve().parent
+PROJECT_DIR = TEST_DIR.parent
+sys.path.insert(0, str(PROJECT_DIR))
+
 from datetime import date
+from unittest.mock import patch
 import live_connector as lc
 
 print("=" * 78)
@@ -82,6 +87,85 @@ assert lc.is_archive_index_url(
     "https://www.in.gov/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-april-8,-2026-regular-letting/"
 ) is False
 print("PASS")
+
+# ============================================================
+# bounded discover_upcoming_lettings() tests -- all network calls mocked,
+# genuinely network-free, exercising the real Stage-1 logic end to end.
+# ============================================================
+
+ARCHIVE_HTML = '''
+<html><body>
+<a href="/indot/doing-business-with-indot/home/contracts/letting-archives2/">letting-archives2</a>
+<a href="/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-past-letting/">Past</a>
+<a href="/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-future-a-letting/">Future A</a>
+<a href="/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-future-a-letting">Future A dup</a>
+<a href="/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-future-b-letting/">Future B</a>
+<a href="/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-future-c-letting/">Future C</a>
+<a href="/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-future-d-letting/">Future D</a>
+<a href="/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-future-e-letting/">Future E</a>
+<a href="/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-future-f-letting/">Future F (should be excluded, only 5 allowed)</a>
+<a href="/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-broken-letting/">Broken</a>
+</body></html>
+'''
+
+PAGE_HTML = {
+    "past-letting": '<html><body>Wednesday, July 1, 2020 - Regular Letting</body></html>',
+    "future-a-letting": '<html><body>Wednesday, September 10, 2026 - Regular Letting <a href="B-and-PH-List_a.pdf">Bidders</a></body></html>',
+    "future-b-letting": '<html><body>Wednesday, September 3, 2026 - Regular Letting</body></html>',  # no planholder link yet
+    "future-c-letting": '<html><body>Wednesday, September 17, 2026 - Regular Letting <a href="bidders_list_c.pdf">Bidders</a></body></html>',
+    "future-d-letting": '<html><body>Wednesday, September 24, 2026 - Regular Letting <a href="B-and-PH-List_d.pdf">Bidders</a></body></html>',
+    "future-e-letting": '<html><body>Wednesday, October 1, 2026 - Regular Letting <a href="B-and-PH-List_e.pdf">Bidders</a></body></html>',
+    "future-f-letting": '<html><body>Wednesday, October 8, 2026 - Regular Letting <a href="B-and-PH-List_f.pdf">Bidders</a></body></html>',
+}
+
+
+def fake_fetch_with_cache(url, force_refresh=False, timeout=30):
+    if lc.is_archive_index_url(url):
+        return ARCHIVE_HTML.encode(), {"source_url": url}
+    if "broken-letting" in url:
+        raise TimeoutError("simulated one bad letting page")
+    for key, html in PAGE_HTML.items():
+        if key in url:
+            return html.encode(), {"source_url": url}
+    raise AssertionError(f"unexpected URL in mock: {url}")
+
+
+print("\n" + "=" * 78)
+print("TEST: bounded discover_upcoming_lettings() -- fully mocked, no network")
+print("=" * 78)
+with patch.object(lc, "fetch_with_cache", side_effect=fake_fetch_with_cache):
+    results, index_entry = lc.discover_upcoming_lettings(today=date(2026, 8, 24))
+
+print(f"results returned: {len(results)}")
+for r in results:
+    print(" ", r)
+
+assert len(results) == lc.MAX_UPCOMING_LETTINGS, f"expected exactly {lc.MAX_UPCOMING_LETTINGS}, got {len(results)}"
+print(f"PASS: exactly {lc.MAX_UPCOMING_LETTINGS} results (max cap enforced, future-f-letting excluded)")
+
+dates = [r["letting_date"] for r in results]
+assert dates == sorted(dates), f"not sorted ascending: {dates}"
+print(f"PASS: sorted ascending -> {dates}")
+
+assert all(d >= "2026-08-24" for d in dates), "a past letting leaked into results"
+print("PASS: no past letting present (past-letting correctly excluded)")
+
+urls_seen = [r["letting_page_url"] for r in results]
+assert len(urls_seen) == len(set(u.rstrip("/") for u in urls_seen)), "duplicate URL not removed"
+print("PASS: duplicate future-a-letting URL (with/without trailing slash) collapsed to one entry")
+
+b_result = next(r for r in results if "future-b-letting" in r["letting_page_url"])
+assert b_result["planholder_list_available"] is False
+assert b_result["reason"] == "no_prebid_candidate_list"
+print("PASS: missing Planholder link -> planholder_list_available=False, reason='no_prebid_candidate_list'")
+
+a_result = next(r for r in results if "future-a-letting" in r["letting_page_url"])
+assert a_result["planholder_list_available"] is True
+assert a_result["planholder_url"].endswith("B-and-PH-List_a.pdf")
+print(f"PASS: found Planholder link resolved to absolute URL -> {a_result['planholder_url']}")
+
+print("\n(one broken letting page was included in the mocked archive index; discovery completed")
+print(" without raising, confirming one bad page does not stop the rest -- see 'broken-letting' handling)")
 
 print("\n" + "=" * 78)
 print("ALL live_connector TESTS PASSED (no network access used)")
