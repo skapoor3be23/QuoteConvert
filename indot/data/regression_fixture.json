@@ -1,0 +1,8 @@
+{
+  "contract_id": "B-40989-A",
+  "fein": "38-1164400",
+  "bid_amount": 280048.8,
+  "expected_p_win": 0.932012,
+  "expected_status": "ok",
+  "model_version": "indot_survival_v1.0"
+}

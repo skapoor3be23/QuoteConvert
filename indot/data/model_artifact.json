@@ -1,0 +1,72 @@
+{
+  "model_version": "indot_survival_v1.0",
+  "architecture": "auction-consistent survival model, per-contract normalization, temperature scaling",
+  "training_period": {
+    "start": "2019-01-16",
+    "end": "2021-08-11",
+    "n_lettings": 40
+  },
+  "calibration_period": {
+    "start": "2021-09-15",
+    "end": "2022-09-14",
+    "n_lettings": 14
+  },
+  "test_period": {
+    "start": "2022-10-13",
+    "end": "2025-07-09",
+    "n_lettings": 14
+  },
+  "global_participation_rate": 0.6954,
+  "temperature_T": 0.2,
+  "fallback_thresholds": {
+    "contractor_own_history_min_obs": 3,
+    "district_pooled_min_obs": 15
+  },
+  "competition_level_thresholds": {
+    "derivation": "tertiles of per-contract Valid-For-Bid candidate count, TRAINING PERIOD ONLY (1152 contracts)",
+    "low_max": 3,
+    "moderate_max": 5,
+    "high_min": 6
+  },
+  "unusual_project_thresholds": {
+    "derivation": "5th/95th percentile of log(EE) within district, TRAINING PERIOD ONLY",
+    "by_district": {
+      "Crawfordsville": {
+        "p5": 12.125599890177234,
+        "p95": 16.455272715838476,
+        "n": 171
+      },
+      "Greenfield": {
+        "p5": 12.004078179826246,
+        "p95": 16.36977728958703,
+        "n": 261
+      },
+      "LaPorte": {
+        "p5": 11.905419270227807,
+        "p95": 16.016142008205584,
+        "n": 182
+      },
+      "Seymour": {
+        "p5": 11.75830021382401,
+        "p95": 16.25416072825679,
+        "n": 226
+      },
+      "Vincennes": {
+        "p5": 12.217937894743049,
+        "p95": 15.862708366672384,
+        "n": 146
+      }
+    }
+  },
+  "data_entry_sanity_check": {
+    "min_ratio": 0.5,
+    "max_ratio": 2.0,
+    "note": "input-validation warning only, NOT the statistical unusual-project flag"
+  },
+  "feature_definitions": {
+    "ratio": "bid_amount / engineers_estimate",
+    "contractor_prior_winrate": "strict-prior (<) mean is_winner for this FEIN, requires >=3 obs else district/global fallback",
+    "contractor_prior_avg_ratio": "strict-prior (<) mean ratio for this FEIN, requires >=3 obs else district/global fallback",
+    "candidate_survival_fn": "empirical CDF of a candidate's strict-prior ratios, tiered fallback: own(>=3) -> district(>=15) -> global"
+  }
+}

@@ -1,0 +1,36 @@
+__pycache__/
+*.pyc
+
+indot/raw/
+indot/sopi_raw/
+indot/__pycache__/
+
+# Research-only data / artifacts
+*.pkl
+indot/*.html
+indot/*.pdf
+indot/*.txt
+indot/cdx_*.json
+indot/wb*.json
+indot/old_letting_pages.json
+indot/date_match_qa.json
+
+# Large research datasets
+indot/full_with_qnorm.csv
+indot/indot_clean_scaled.csv
+indot/indot_clean_scaled_prelim.csv
+indot/indot_features.csv
+indot/indot_features_fit.csv
+indot/indot_parsed.json
+indot/indot_scaled_features.csv
+indot/scaled_with_qnorm.csv
+indot/test_final_probs.csv
+indot/test_predictions_for_audit.csv
+indot/sopi_features.csv
+indot/sopi_items_by_contract.json
+
+# Local / environment
+.env
+.venv/
+venv/
+.DS_Store
