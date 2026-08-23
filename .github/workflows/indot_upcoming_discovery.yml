@@ -17,47 +17,42 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install discovery dependencies
+      - name: Install dependencies
         shell: bash
         run: |
           set -euxo pipefail
           python -m pip install --upgrade pip
           python -m pip install pypdf
 
-      - name: Run bounded INDOT discovery
+      - name: Run Stage 1 discovery and Stage 2 Planholder ingestion
         working-directory: indot
         shell: bash
         run: |
           set -euxo pipefail
 
-          echo "Starting bounded INDOT letting discovery..."
-          echo
-
           python - <<'PY'
           import json
-          from live_connector import discover_upcoming_lettings
+          from live_connector import (
+              discover_upcoming_lettings,
+              ingest_earliest_planholder_list,
+          )
+
+          print("=" * 80)
+          print("STAGE 1 — UPCOMING LETTING DISCOVERY")
+          print("=" * 80)
 
           results, index_entry = discover_upcoming_lettings()
 
-          print()
-          print("=" * 80)
-          print("INDOT UPCOMING DISCOVERY")
-          print("=" * 80)
-
           print(f"Archive retrieval timestamp: {index_entry.get('retrieval_timestamp')}")
           print(f"Archive checksum: {index_entry.get('checksum')}")
-          print(f"Upcoming results returned: {len(results)}")
-
-          print()
-          print("RESULTS")
-          print("=" * 80)
+          print(f"Upcoming lettings returned: {len(results)}")
 
           for i, result in enumerate(results, start=1):
               print(f"\n--- Letting {i} ---")
               print(f"Letting date: {result.get('letting_date')}")
               print(f"Letting page: {result.get('letting_page_url')}")
               print(
-                  f"Planholder available: "
+                  "Planholder available: "
                   f"{result.get('planholder_list_available')}"
               )
 
@@ -78,17 +73,33 @@ jobs:
                   sort_keys=True,
               )
 
-          print()
+          print("\n" + "=" * 80)
+          print("STAGE 2 — EARLIEST PLANHOLDER INGESTION")
           print("=" * 80)
-          print("Saved discovery_results.json")
-          print("=" * 80)
+
+          planholder_result = ingest_earliest_planholder_list()
+
+          print(json.dumps(planholder_result, indent=2, sort_keys=True))
+
+          with open("planholder_result.json", "w", encoding="utf-8") as f:
+              json.dump(
+                  planholder_result,
+                  f,
+                  indent=2,
+                  sort_keys=True,
+              )
+
+          print("\nSaved:")
+          print("  discovery_results.json")
+          print("  planholder_result.json")
           PY
 
-      - name: Upload discovery evidence
+      - name: Upload discovery and Planholder evidence
         uses: actions/upload-artifact@v4
         with:
-          name: indot-upcoming-discovery
+          name: indot-live-discovery-stage2
           path: |
             indot/discovery_results.json
+            indot/planholder_result.json
             indot/live_cache/cache_index.json
           if-no-files-found: warn

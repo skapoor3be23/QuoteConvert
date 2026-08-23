@@ -190,6 +190,84 @@ assert future1["planholder_list_available"] is True
 assert future1["planholder_url"].endswith("B-and-PH-List_1.pdf")
 print(f"PASS: Planholder link discovered only after its page was fetched -> {future1['planholder_url']}")
 
+# ============================================================
+# STAGE 2: ingest_earliest_planholder_list() -- validated against the REAL,
+# already-verified July 8, 2026 Planholder PDF held locally in this project
+# (not a fresh live fetch -- see final report). Confirms the Stage-2 logic
+# reproduces the previously-verified 238/238 candidate count exactly.
+# ============================================================
+import hashlib
+from pathlib import Path
+
+REAL_PDF = PROJECT_DIR / "bidders_list_07_08_2026.pdf"
+
+if REAL_PDF.exists():
+    print("\n" + "=" * 78)
+    print("TEST: ingest_earliest_planholder_list() against the real, verified 2026 PDF")
+    print("=" * 78)
+    real_bytes = REAL_PDF.read_bytes()
+    real_checksum = hashlib.sha256(real_bytes).hexdigest()
+    fake_results = [{
+        "letting_date": "2026-07-08",
+        "letting_page_url": "https://www.in.gov/indot/.../wednesday,-july-8,-2026-regular-letting/",
+        "planholder_list_available": True,
+        "planholder_url": "https://www.in.gov/indot/doing-business-with-indot/files/Bidders-List_7.1.pdf",
+    }]
+    call_log = []
+
+    def fake_fetch(url, force_refresh=False, timeout=30):
+        call_log.append(url)
+        return real_bytes, {
+            "source_url": url, "retrieval_timestamp": "2026-08-24T00:00:00+00:00",
+            "checksum": real_checksum, "changed_this_fetch": len(call_log) == 1,
+            "local_path": str(REAL_PDF),
+        }
+
+    with patch.object(lc, "discover_upcoming_lettings", return_value=(fake_results, {})), \
+         patch.object(lc, "fetch_with_cache", side_effect=fake_fetch):
+        report = lc.ingest_earliest_planholder_list()
+        report2 = lc.ingest_earliest_planholder_list()
+
+    assert report["status"] == "ok"
+    assert report["pdf_size_bytes"] == len(real_bytes) > 0
+    assert report["candidate_count"] == 238, report["candidate_count"]
+    assert report["valid_for_bid_count"] == 238, report["valid_for_bid_count"]
+    print(f"PASS: candidate_count=238, valid_for_bid_count=238 -- matches the previously verified result exactly")
+    assert report["pdf_sha256"] == report2["pdf_sha256"]
+    assert report["changed_this_fetch"] is True and report2["changed_this_fetch"] is False
+    print("PASS: refresh test -- identical checksum, changed_this_fetch True then False")
+    assert len(call_log) == 2 and all("Bidders-List_7.1.pdf" in u for u in call_log)
+    print("PASS: only the one real Planholder URL was ever requested (no unrelated document fetched)")
+else:
+    print("\n(skipping real-PDF Stage 2 test -- bidders_list_07_08_2026.pdf not present in this checkout)")
+
+print("\n" + "=" * 78)
+print("TEST: ingest_earliest_planholder_list() edge cases")
+print("=" * 78)
+with patch.object(lc, "discover_upcoming_lettings", return_value=([], {})):
+    r = lc.ingest_earliest_planholder_list()
+    assert r == {"status": "no_upcoming_letting"}, r
+    print("PASS: no upcoming lettings -> status='no_upcoming_letting'")
+
+no_bph_results = [{
+    "letting_date": "2026-09-02", "letting_page_url": "https://www.in.gov/indot/.../sept2/",
+    "planholder_list_available": False, "planholder_url": None, "reason": "no_prebid_candidate_list",
+}]
+with patch.object(lc, "discover_upcoming_lettings", return_value=(no_bph_results, {})):
+    r = lc.ingest_earliest_planholder_list()
+    assert r["status"] == "no_prebid_candidate_list", r
+    print("PASS: earliest upcoming letting has no Planholder List -> status='no_prebid_candidate_list' (no old PDF substituted)")
+
+bad_pdf_results = [{
+    "letting_date": "2026-09-02", "letting_page_url": "https://www.in.gov/indot/.../sept2/",
+    "planholder_list_available": True, "planholder_url": "https://www.in.gov/indot/.../not_a_pdf.pdf",
+}]
+with patch.object(lc, "discover_upcoming_lettings", return_value=(bad_pdf_results, {})), \
+     patch.object(lc, "fetch_with_cache", return_value=(b"<html>not a pdf</html>", {"source_url": "x", "checksum": "x", "changed_this_fetch": True, "local_path": "x"})):
+    r = lc.ingest_earliest_planholder_list()
+    assert r["status"] == "invalid_pdf", r
+    print("PASS: non-%PDF- bytes -> status='invalid_pdf'")
+
 print("\n" + "=" * 78)
 print("ALL live_connector TESTS PASSED (no network access used)")
 print("=" * 78)

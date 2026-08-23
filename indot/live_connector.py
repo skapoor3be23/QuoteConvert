@@ -379,6 +379,64 @@ def discover_upcoming_lettings(today=None, max_results=MAX_UPCOMING_LETTINGS):
     return results, index_entry
 
 
+def ingest_earliest_planholder_list(today=None):
+    """STAGE 2: take ONLY the earliest upcoming letting from discover_upcoming_lettings()
+    (Stage 1, already bounded/live-validated) and download+parse ITS Planholder PDF.
+    Never touches the other <= 4 upcoming lettings' documents. Does NOT run inference.
+
+    Returns a dict with status one of:
+      "no_upcoming_letting"       -- Stage 1 found nothing upcoming
+      "no_prebid_candidate_list"  -- earliest upcoming letting has no Planholder List yet
+      "invalid_pdf"               -- downloaded bytes do not start with %PDF-
+      "ok"                        -- full report, see final-report schema
+    """
+    results, index_entry = discover_upcoming_lettings(today=today)
+    if not results:
+        return {"status": "no_upcoming_letting"}
+
+    earliest = results[0]  # discover_upcoming_lettings() already returns ascending-sorted
+    if not earliest["planholder_list_available"]:
+        return {
+            "status": "no_prebid_candidate_list",
+            "letting_date": earliest["letting_date"],
+            "letting_page_url": earliest["letting_page_url"],
+        }
+
+    pdf_data, pdf_entry = fetch_with_cache(earliest["planholder_url"])
+    if not pdf_data.startswith(b"%PDF-"):
+        return {
+            "status": "invalid_pdf",
+            "letting_date": earliest["letting_date"],
+            "letting_page_url": earliest["letting_page_url"],
+            "planholder_url": earliest["planholder_url"],
+        }
+
+    # parse via the already-validated parse_indot.py logic -- not duplicated here
+    txt = full_text(pdf_entry["local_path"])
+    blocks = load_blocks(txt)
+    total_candidates = 0
+    total_valid = 0
+    for cid, segs in blocks.items():
+        ptxt = segs[0]
+        for m in PLAN_NAME_RE.finditer(ptxt):
+            total_candidates += 1
+            if m.group(2) == "Yes":
+                total_valid += 1
+
+    return {
+        "status": "ok",
+        "letting_date": earliest["letting_date"],
+        "letting_page_url": earliest["letting_page_url"],
+        "planholder_url": pdf_entry["source_url"],
+        "pdf_size_bytes": len(pdf_data),
+        "pdf_sha256": pdf_entry["checksum"],
+        "retrieval_timestamp": pdf_entry["retrieval_timestamp"],
+        "changed_this_fetch": pdf_entry["changed_this_fetch"],
+        "candidate_count": total_candidates,
+        "valid_for_bid_count": total_valid,
+    }
+
+
 def run_discovery_report():
     """Explicit, callable entry point for a live test run (e.g. from a GitHub Actions
     step). Never called on import -- only invoked when explicitly requested.
