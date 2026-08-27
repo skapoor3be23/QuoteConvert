@@ -1,11 +1,1962 @@
 {
   "snapshot_version": 1,
-  "retrieved_at": "2026-08-26T12:26:35.831388+00:00",
+  "retrieved_at": "2026-08-27T21:23:48.568548+00:00",
   "source": "INDOT",
   "source_archive_url": "https://www.in.gov/indot/doing-business-with-indot/home/contracts/letting-archives2/",
   "letting": {
     "letting_date": "2026-09-02",
     "letting_page_url": "https://www.in.gov/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-september-2,-2026-regular-letting",
-    "status": "no_prebid_candidate_list"
+    "status": "available",
+    "planholder_url": "https://www.in.gov/indot/doing-business-with-indot/files/Bidders-List-09.02.2026.pdf",
+    "planholder_retrieved_at": "2026-08-27T21:23:50.224191+00:00",
+    "planholder_sha256": "6a65460ce915ba7d83d7f65715c2687c19bc1221c434dc6ca95dc93117feb4dc",
+    "candidate_count": 183,
+    "valid_for_bid_count": 183,
+    "contracts": [
+      {
+        "contract_id": "B-42374-A",
+        "candidate_count": 5,
+        "valid_for_bid": [
+          {
+            "contractor_name": "MILLER BROS CONSTRUCTION INC",
+            "fein": "34-4456871"
+          },
+          {
+            "contractor_name": "R L MCCOY INC",
+            "fein": "35-1057237"
+          },
+          {
+            "contractor_name": "BEATY CONSTRUCTION, INC.",
+            "fein": "35-1128289"
+          },
+          {
+            "contractor_name": "E & B PAVING LLC",
+            "fein": "35-1139301"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          }
+        ],
+        "district": null,
+        "all_candidates": [
+          {
+            "name": "MILLER BROS CONSTRUCTION INC",
+            "fein": "34-4456871",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "R L MCCOY INC",
+            "fein": "35-1057237",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "BEATY CONSTRUCTION, INC.",
+            "fein": "35-1128289",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "E & B PAVING LLC",
+            "fein": "35-1139301",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-43492-A",
+        "candidate_count": 6,
+        "valid_for_bid": [
+          {
+            "contractor_name": "BEATY CONSTRUCTION, INC.",
+            "fein": "35-1128289"
+          },
+          {
+            "contractor_name": "E & B PAVING LLC",
+            "fein": "35-1139301"
+          },
+          {
+            "contractor_name": "INC",
+            "fein": "35-1602596"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "SOUTHERN ROAD & BRIDGE, LLC",
+            "fein": "46-1187423"
+          },
+          {
+            "contractor_name": "AMERICAN INDUSTRIAL COATINGS INC.",
+            "fein": "93-4967960"
+          }
+        ],
+        "district": "Greenfield",
+        "all_candidates": [
+          {
+            "name": "BEATY CONSTRUCTION, INC.",
+            "fein": "35-1128289",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "E & B PAVING LLC",
+            "fein": "35-1139301",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "INC",
+            "fein": "35-1602596",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "SOUTHERN ROAD & BRIDGE, LLC",
+            "fein": "46-1187423",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "AMERICAN INDUSTRIAL COATINGS INC.",
+            "fein": "93-4967960",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-43605-A",
+        "candidate_count": 8,
+        "valid_for_bid": [
+          {
+            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397"
+          },
+          {
+            "contractor_name": "E & B PAVING LLC",
+            "fein": "35-1139301"
+          },
+          {
+            "contractor_name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611"
+          },
+          {
+            "contractor_name": "FORCE CONSTRUCTION CO INC",
+            "fein": "35-1385672"
+          },
+          {
+            "contractor_name": "PONTEM CONTRACTORS INC",
+            "fein": "35-1609544"
+          },
+          {
+            "contractor_name": "CLR, INC.",
+            "fein": "35-1801998"
+          },
+          {
+            "contractor_name": "RAGLE, INC.",
+            "fein": "35-1878024"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          }
+        ],
+        "district": "Vincennes",
+        "all_candidates": [
+          {
+            "name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "E & B PAVING LLC",
+            "fein": "35-1139301",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "FORCE CONSTRUCTION CO INC",
+            "fein": "35-1385672",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "PONTEM CONTRACTORS INC",
+            "fein": "35-1609544",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "CLR, INC.",
+            "fein": "35-1801998",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "RAGLE, INC.",
+            "fein": "35-1878024",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-43771-A",
+        "candidate_count": 8,
+        "valid_for_bid": [
+          {
+            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397"
+          },
+          {
+            "contractor_name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611"
+          },
+          {
+            "contractor_name": "DAVE O'MARA CONTRACTOR INC",
+            "fein": "35-1357381"
+          },
+          {
+            "contractor_name": "FORCE CONSTRUCTION CO INC",
+            "fein": "35-1385672"
+          },
+          {
+            "contractor_name": "PONTEM CONTRACTORS INC",
+            "fein": "35-1609544"
+          },
+          {
+            "contractor_name": "RAGLE, INC.",
+            "fein": "35-1878024"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "5 STAR COMPANY INC",
+            "fein": "81-5434991"
+          }
+        ],
+        "district": "Seymour",
+        "all_candidates": [
+          {
+            "name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "DAVE O'MARA CONTRACTOR INC",
+            "fein": "35-1357381",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "FORCE CONSTRUCTION CO INC",
+            "fein": "35-1385672",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "PONTEM CONTRACTORS INC",
+            "fein": "35-1609544",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "RAGLE, INC.",
+            "fein": "35-1878024",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "5 STAR COMPANY INC",
+            "fein": "81-5434991",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-44104-A",
+        "candidate_count": 6,
+        "valid_for_bid": [
+          {
+            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397"
+          },
+          {
+            "contractor_name": "BEATY CONSTRUCTION, INC.",
+            "fein": "35-1128289"
+          },
+          {
+            "contractor_name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611"
+          },
+          {
+            "contractor_name": "INC",
+            "fein": "35-1339168"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "HIS CONSTRUCTORS INC",
+            "fein": "38-3806996"
+          }
+        ],
+        "district": "LaPorte",
+        "all_candidates": [
+          {
+            "name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "BEATY CONSTRUCTION, INC.",
+            "fein": "35-1128289",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "INC",
+            "fein": "35-1339168",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "HIS CONSTRUCTORS INC",
+            "fein": "38-3806996",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-44107-A",
+        "candidate_count": 6,
+        "valid_for_bid": [
+          {
+            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397"
+          },
+          {
+            "contractor_name": "ELLAS CONSTRUCTION COMPANY INC",
+            "fein": "35-1106884"
+          },
+          {
+            "contractor_name": "INC",
+            "fein": "35-1339168"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "DUNNET BAY CONSTRUCTION COMPANY",
+            "fein": "36-3253376"
+          },
+          {
+            "contractor_name": "ASSOCIATES LLC",
+            "fein": "36-4518443"
+          }
+        ],
+        "district": "LaPorte",
+        "all_candidates": [
+          {
+            "name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "ELLAS CONSTRUCTION COMPANY INC",
+            "fein": "35-1106884",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "INC",
+            "fein": "35-1339168",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "DUNNET BAY CONSTRUCTION COMPANY",
+            "fein": "36-3253376",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "ASSOCIATES LLC",
+            "fein": "36-4518443",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-44108-A",
+        "candidate_count": 7,
+        "valid_for_bid": [
+          {
+            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397"
+          },
+          {
+            "contractor_name": "GARIUP CONSTRUCTION CO., INC.",
+            "fein": "35-1035122"
+          },
+          {
+            "contractor_name": "ELLAS CONSTRUCTION COMPANY INC",
+            "fein": "35-1106884"
+          },
+          {
+            "contractor_name": "INC",
+            "fein": "35-1339168"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "DUNNET BAY CONSTRUCTION COMPANY",
+            "fein": "36-3253376"
+          },
+          {
+            "contractor_name": "ASSOCIATES LLC",
+            "fein": "36-4518443"
+          }
+        ],
+        "district": "LaPorte",
+        "all_candidates": [
+          {
+            "name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "GARIUP CONSTRUCTION CO., INC.",
+            "fein": "35-1035122",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "ELLAS CONSTRUCTION COMPANY INC",
+            "fein": "35-1106884",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "INC",
+            "fein": "35-1339168",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "DUNNET BAY CONSTRUCTION COMPANY",
+            "fein": "36-3253376",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "ASSOCIATES LLC",
+            "fein": "36-4518443",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-44269-A",
+        "candidate_count": 9,
+        "valid_for_bid": [
+          {
+            "contractor_name": "BEATY CONSTRUCTION, INC.",
+            "fein": "35-1128289"
+          },
+          {
+            "contractor_name": "E & B PAVING LLC",
+            "fein": "35-1139301"
+          },
+          {
+            "contractor_name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611"
+          },
+          {
+            "contractor_name": "INC",
+            "fein": "35-1602596"
+          },
+          {
+            "contractor_name": "PONTEM CONTRACTORS INC",
+            "fein": "35-1609544"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "HIS CONSTRUCTORS INC",
+            "fein": "38-3806996"
+          },
+          {
+            "contractor_name": "SOUTHERN ROAD & BRIDGE, LLC",
+            "fein": "46-1187423"
+          },
+          {
+            "contractor_name": "AMERICAN INDUSTRIAL COATINGS INC.",
+            "fein": "93-4967960"
+          }
+        ],
+        "district": "Greenfield",
+        "all_candidates": [
+          {
+            "name": "BEATY CONSTRUCTION, INC.",
+            "fein": "35-1128289",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "E & B PAVING LLC",
+            "fein": "35-1139301",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "INC",
+            "fein": "35-1602596",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "PONTEM CONTRACTORS INC",
+            "fein": "35-1609544",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "HIS CONSTRUCTORS INC",
+            "fein": "38-3806996",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "SOUTHERN ROAD & BRIDGE, LLC",
+            "fein": "46-1187423",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "AMERICAN INDUSTRIAL COATINGS INC.",
+            "fein": "93-4967960",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-44287-A",
+        "candidate_count": 4,
+        "valid_for_bid": [
+          {
+            "contractor_name": "BLANKENBERGER BROTHERS INC",
+            "fein": "35-1057095"
+          },
+          {
+            "contractor_name": "BEATY CONSTRUCTION, INC.",
+            "fein": "35-1128289"
+          },
+          {
+            "contractor_name": "CLR, INC.",
+            "fein": "35-1801998"
+          },
+          {
+            "contractor_name": "RAGLE, INC.",
+            "fein": "35-1878024"
+          }
+        ],
+        "district": "Vincennes",
+        "all_candidates": [
+          {
+            "name": "BLANKENBERGER BROTHERS INC",
+            "fein": "35-1057095",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "BEATY CONSTRUCTION, INC.",
+            "fein": "35-1128289",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "CLR, INC.",
+            "fein": "35-1801998",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "RAGLE, INC.",
+            "fein": "35-1878024",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-44473-A",
+        "candidate_count": 4,
+        "valid_for_bid": [
+          {
+            "contractor_name": "E & B PAVING LLC",
+            "fein": "35-1139301"
+          },
+          {
+            "contractor_name": "FORCE CONSTRUCTION CO INC",
+            "fein": "35-1385672"
+          },
+          {
+            "contractor_name": "RAGLE, INC.",
+            "fein": "35-1878024"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          }
+        ],
+        "district": "Seymour",
+        "all_candidates": [
+          {
+            "name": "E & B PAVING LLC",
+            "fein": "35-1139301",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "FORCE CONSTRUCTION CO INC",
+            "fein": "35-1385672",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "RAGLE, INC.",
+            "fein": "35-1878024",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-44507-A",
+        "candidate_count": 4,
+        "valid_for_bid": [
+          {
+            "contractor_name": "BLANKENBERGER BROTHERS INC",
+            "fein": "35-1057095"
+          },
+          {
+            "contractor_name": "E & B PAVING LLC",
+            "fein": "35-1139301"
+          },
+          {
+            "contractor_name": "RAGLE, INC.",
+            "fein": "35-1878024"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          }
+        ],
+        "district": "Vincennes",
+        "all_candidates": [
+          {
+            "name": "BLANKENBERGER BROTHERS INC",
+            "fein": "35-1057095",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "E & B PAVING LLC",
+            "fein": "35-1139301",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "RAGLE, INC.",
+            "fein": "35-1878024",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-44595-A",
+        "candidate_count": 7,
+        "valid_for_bid": [
+          {
+            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397"
+          },
+          {
+            "contractor_name": "DEICHMAN EXCAVATING CO INC",
+            "fein": "35-1325036"
+          },
+          {
+            "contractor_name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222"
+          },
+          {
+            "contractor_name": "3D COMPANY INC",
+            "fein": "35-2094565"
+          },
+          {
+            "contractor_name": "5 STAR COMPANY INC",
+            "fein": "81-5434991"
+          }
+        ],
+        "district": "Greenfield",
+        "all_candidates": [
+          {
+            "name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "DEICHMAN EXCAVATING CO INC",
+            "fein": "35-1325036",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "3D COMPANY INC",
+            "fein": "35-2094565",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "5 STAR COMPANY INC",
+            "fein": "81-5434991",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-44643-A",
+        "candidate_count": 3,
+        "valid_for_bid": [
+          {
+            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "ENNEKING PRESSURE CLEANING INC.",
+            "fein": "61-1609668"
+          }
+        ],
+        "district": "LaPorte",
+        "all_candidates": [
+          {
+            "name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "ENNEKING PRESSURE CLEANING INC.",
+            "fein": "61-1609668",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-45066-A",
+        "candidate_count": 6,
+        "valid_for_bid": [
+          {
+            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397"
+          },
+          {
+            "contractor_name": "R L MCCOY INC",
+            "fein": "35-1057237"
+          },
+          {
+            "contractor_name": "E & B PAVING LLC",
+            "fein": "35-1139301"
+          },
+          {
+            "contractor_name": "INC",
+            "fein": "35-1339168"
+          },
+          {
+            "contractor_name": "PIONEER ASSOCIATES, INC.",
+            "fein": "35-1817530"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          }
+        ],
+        "district": null,
+        "all_candidates": [
+          {
+            "name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "R L MCCOY INC",
+            "fein": "35-1057237",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "E & B PAVING LLC",
+            "fein": "35-1139301",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "INC",
+            "fein": "35-1339168",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "PIONEER ASSOCIATES, INC.",
+            "fein": "35-1817530",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-45068-A",
+        "candidate_count": 5,
+        "valid_for_bid": [
+          {
+            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397"
+          },
+          {
+            "contractor_name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611"
+          },
+          {
+            "contractor_name": "PONTEM CONTRACTORS INC",
+            "fein": "35-1609544"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "HIS CONSTRUCTORS INC",
+            "fein": "38-3806996"
+          }
+        ],
+        "district": "Crawfordsville",
+        "all_candidates": [
+          {
+            "name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "PONTEM CONTRACTORS INC",
+            "fein": "35-1609544",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "HIS CONSTRUCTORS INC",
+            "fein": "38-3806996",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-45599-A",
+        "candidate_count": 8,
+        "valid_for_bid": [
+          {
+            "contractor_name": "PAUL H ROHE COMPANY INC",
+            "fein": "35-0844079"
+          },
+          {
+            "contractor_name": "E & B PAVING LLC",
+            "fein": "35-1139301"
+          },
+          {
+            "contractor_name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611"
+          },
+          {
+            "contractor_name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222"
+          },
+          {
+            "contractor_name": "3D COMPANY INC",
+            "fein": "35-2094565"
+          },
+          {
+            "contractor_name": "5 STAR COMPANY INC",
+            "fein": "81-5434991"
+          }
+        ],
+        "district": "Greenfield",
+        "all_candidates": [
+          {
+            "name": "PAUL H ROHE COMPANY INC",
+            "fein": "35-0844079",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "E & B PAVING LLC",
+            "fein": "35-1139301",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "3D COMPANY INC",
+            "fein": "35-2094565",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "5 STAR COMPANY INC",
+            "fein": "81-5434991",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "B-45612-A",
+        "candidate_count": 7,
+        "valid_for_bid": [
+          {
+            "contractor_name": "PAUL H ROHE COMPANY INC",
+            "fein": "35-0844079"
+          },
+          {
+            "contractor_name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611"
+          },
+          {
+            "contractor_name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222"
+          },
+          {
+            "contractor_name": "3D COMPANY INC",
+            "fein": "35-2094565"
+          },
+          {
+            "contractor_name": "5 STAR COMPANY INC",
+            "fein": "81-5434991"
+          }
+        ],
+        "district": "Greenfield",
+        "all_candidates": [
+          {
+            "name": "PAUL H ROHE COMPANY INC",
+            "fein": "35-0844079",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "DUNCAN ROBERTSON INC",
+            "fein": "35-1310611",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "3D COMPANY INC",
+            "fein": "35-2094565",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "5 STAR COMPANY INC",
+            "fein": "81-5434991",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "R-42311-A",
+        "candidate_count": 6,
+        "valid_for_bid": [
+          {
+            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397"
+          },
+          {
+            "contractor_name": "GARIUP CONSTRUCTION CO., INC.",
+            "fein": "35-1035122"
+          },
+          {
+            "contractor_name": "DYER CONSTRUCTION COMPANY INC",
+            "fein": "35-1068009"
+          },
+          {
+            "contractor_name": "GRIMMER CONSTRUCTION INC",
+            "fein": "35-1569222"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "ASSOCIATES LLC",
+            "fein": "36-4518443"
+          }
+        ],
+        "district": "LaPorte",
+        "all_candidates": [
+          {
+            "name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "GARIUP CONSTRUCTION CO., INC.",
+            "fein": "35-1035122",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "DYER CONSTRUCTION COMPANY INC",
+            "fein": "35-1068009",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "GRIMMER CONSTRUCTION INC",
+            "fein": "35-1569222",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "ASSOCIATES LLC",
+            "fein": "36-4518443",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "R-43371-A",
+        "candidate_count": 3,
+        "valid_for_bid": [
+          {
+            "contractor_name": "PAUL H ROHE COMPANY INC",
+            "fein": "35-0844079"
+          },
+          {
+            "contractor_name": "BEATY CONSTRUCTION, INC.",
+            "fein": "35-1128289"
+          },
+          {
+            "contractor_name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222"
+          }
+        ],
+        "district": "Seymour",
+        "all_candidates": [
+          {
+            "name": "PAUL H ROHE COMPANY INC",
+            "fein": "35-0844079",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "BEATY CONSTRUCTION, INC.",
+            "fein": "35-1128289",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "R-44461-A",
+        "candidate_count": 9,
+        "valid_for_bid": [
+          {
+            "contractor_name": "E & B PAVING LLC",
+            "fein": "35-1139301"
+          },
+          {
+            "contractor_name": "FORCE CONSTRUCTION CO INC",
+            "fein": "35-1385672"
+          },
+          {
+            "contractor_name": "CLR, INC.",
+            "fein": "35-1801998"
+          },
+          {
+            "contractor_name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574"
+          },
+          {
+            "contractor_name": "CRIDER & CRIDER, INC.",
+            "fein": "35-1875662"
+          },
+          {
+            "contractor_name": "RAGLE, INC.",
+            "fein": "35-1878024"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222"
+          },
+          {
+            "contractor_name": "5 STAR COMPANY INC",
+            "fein": "81-5434991"
+          }
+        ],
+        "district": "Seymour",
+        "all_candidates": [
+          {
+            "name": "E & B PAVING LLC",
+            "fein": "35-1139301",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "FORCE CONSTRUCTION CO INC",
+            "fein": "35-1385672",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "CLR, INC.",
+            "fein": "35-1801998",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "CRIDER & CRIDER, INC.",
+            "fein": "35-1875662",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "RAGLE, INC.",
+            "fein": "35-1878024",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "5 STAR COMPANY INC",
+            "fein": "81-5434991",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "R-44529-A",
+        "candidate_count": 5,
+        "valid_for_bid": [
+          {
+            "contractor_name": "BROOKS CONSTRUCTION COMPANY INC",
+            "fein": "35-1065659"
+          },
+          {
+            "contractor_name": "PIONEER ASSOCIATES, INC.",
+            "fein": "35-1817530"
+          },
+          {
+            "contractor_name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222"
+          }
+        ],
+        "district": null,
+        "all_candidates": [
+          {
+            "name": "BROOKS CONSTRUCTION COMPANY INC",
+            "fein": "35-1065659",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "PIONEER ASSOCIATES, INC.",
+            "fein": "35-1817530",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "R-44574-A",
+        "candidate_count": 3,
+        "valid_for_bid": [
+          {
+            "contractor_name": "PAVING INC",
+            "fein": "35-1004746"
+          },
+          {
+            "contractor_name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574"
+          },
+          {
+            "contractor_name": "INFRASTRUCTURE SYSTEMS, INC.",
+            "fein": "35-2065425"
+          }
+        ],
+        "district": null,
+        "all_candidates": [
+          {
+            "name": "PAVING INC",
+            "fein": "35-1004746",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "INFRASTRUCTURE SYSTEMS, INC.",
+            "fein": "35-2065425",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "R-45304-A",
+        "candidate_count": 11,
+        "valid_for_bid": [
+          {
+            "contractor_name": "PAVING INC",
+            "fein": "35-1004746"
+          },
+          {
+            "contractor_name": "BLANKENBERGER BROTHERS INC",
+            "fein": "35-1057095"
+          },
+          {
+            "contractor_name": "E & B PAVING LLC",
+            "fein": "35-1139301"
+          },
+          {
+            "contractor_name": "DAVE O'MARA CONTRACTOR INC",
+            "fein": "35-1357381"
+          },
+          {
+            "contractor_name": "FORCE CONSTRUCTION CO INC",
+            "fein": "35-1385672"
+          },
+          {
+            "contractor_name": "LIBS PAVING COMPANY INC",
+            "fein": "35-1785217"
+          },
+          {
+            "contractor_name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574"
+          },
+          {
+            "contractor_name": "RAGLE, INC.",
+            "fein": "35-1878024"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "LOUISVILLE PAVING COMPANY",
+            "fein": "61-1256623"
+          },
+          {
+            "contractor_name": "5 STAR COMPANY INC",
+            "fein": "81-5434991"
+          }
+        ],
+        "district": "Seymour",
+        "all_candidates": [
+          {
+            "name": "PAVING INC",
+            "fein": "35-1004746",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "BLANKENBERGER BROTHERS INC",
+            "fein": "35-1057095",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "E & B PAVING LLC",
+            "fein": "35-1139301",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "DAVE O'MARA CONTRACTOR INC",
+            "fein": "35-1357381",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "FORCE CONSTRUCTION CO INC",
+            "fein": "35-1385672",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "LIBS PAVING COMPANY INC",
+            "fein": "35-1785217",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "RAGLE, INC.",
+            "fein": "35-1878024",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "LOUISVILLE PAVING COMPANY",
+            "fein": "61-1256623",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "5 STAR COMPANY INC",
+            "fein": "81-5434991",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "R-45561-A",
+        "candidate_count": 6,
+        "valid_for_bid": [
+          {
+            "contractor_name": "PAVING INC",
+            "fein": "35-1004746"
+          },
+          {
+            "contractor_name": "MIDWEST MOLE INC",
+            "fein": "35-1526557"
+          },
+          {
+            "contractor_name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574"
+          },
+          {
+            "contractor_name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222"
+          },
+          {
+            "contractor_name": "INFRASTRUCTURE SYSTEMS, INC.",
+            "fein": "35-2065425"
+          },
+          {
+            "contractor_name": "LOUISVILLE PAVING COMPANY",
+            "fein": "61-1256623"
+          }
+        ],
+        "district": "Crawfordsville",
+        "all_candidates": [
+          {
+            "name": "PAVING INC",
+            "fein": "35-1004746",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MIDWEST MOLE INC",
+            "fein": "35-1526557",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "YARBERRY COMPANIES INC",
+            "fein": "35-1817574",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "INFRASTRUCTURE SYSTEMS, INC.",
+            "fein": "35-2065425",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "LOUISVILLE PAVING COMPANY",
+            "fein": "61-1256623",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "R-46477-B",
+        "candidate_count": 2,
+        "valid_for_bid": [
+          {
+            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397"
+          },
+          {
+            "contractor_name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625"
+          }
+        ],
+        "district": "LaPorte",
+        "all_candidates": [
+          {
+            "name": "RIETH-RILEY CONSTRUCTION CO., INC.",
+            "fein": "35-0918397",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MILESTONE CONTRACTORS LP",
+            "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "T-44365-C",
+        "candidate_count": 4,
+        "valid_for_bid": [
+          {
+            "contractor_name": "MIDWESTERN ELECTRIC, LLC",
+            "fein": "35-1262778"
+          },
+          {
+            "contractor_name": "MICHIANA CONTRACTING, INC.",
+            "fein": "35-1657131"
+          },
+          {
+            "contractor_name": "SIGNAL CONSTRUCTION INC",
+            "fein": "35-1710202"
+          },
+          {
+            "contractor_name": "RAGLE, INC.",
+            "fein": "35-1878024"
+          }
+        ],
+        "district": "Vincennes",
+        "all_candidates": [
+          {
+            "name": "MIDWESTERN ELECTRIC, LLC",
+            "fein": "35-1262778",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MICHIANA CONTRACTING, INC.",
+            "fein": "35-1657131",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "SIGNAL CONSTRUCTION INC",
+            "fein": "35-1710202",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "RAGLE, INC.",
+            "fein": "35-1878024",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "T-44476-A",
+        "candidate_count": 4,
+        "valid_for_bid": [
+          {
+            "contractor_name": "C-TECH CORPORATION INC",
+            "fein": "35-1643252"
+          },
+          {
+            "contractor_name": "SPECIALTIES COMPANY, LLC",
+            "fein": "35-2110733"
+          },
+          {
+            "contractor_name": "J. RANCK ELECTRIC, INC.",
+            "fein": "38-2677797"
+          },
+          {
+            "contractor_name": "RMD HOLDINGS LTD",
+            "fein": "38-2932367"
+          }
+        ],
+        "district": "Seymour",
+        "all_candidates": [
+          {
+            "name": "C-TECH CORPORATION INC",
+            "fein": "35-1643252",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "SPECIALTIES COMPANY, LLC",
+            "fein": "35-2110733",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "J. RANCK ELECTRIC, INC.",
+            "fein": "38-2677797",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "RMD HOLDINGS LTD",
+            "fein": "38-2932367",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "T-44477-A",
+        "candidate_count": 6,
+        "valid_for_bid": [
+          {
+            "contractor_name": "JAMES H DREW CORPORATION",
+            "fein": "35-0821499"
+          },
+          {
+            "contractor_name": "MIDWESTERN ELECTRIC, LLC",
+            "fein": "35-1262778"
+          },
+          {
+            "contractor_name": "MICHIANA CONTRACTING, INC.",
+            "fein": "35-1657131"
+          },
+          {
+            "contractor_name": "RAGLE, INC.",
+            "fein": "35-1878024"
+          },
+          {
+            "contractor_name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222"
+          },
+          {
+            "contractor_name": "HIS CONSTRUCTORS INC",
+            "fein": "38-3806996"
+          }
+        ],
+        "district": "Seymour",
+        "all_candidates": [
+          {
+            "name": "JAMES H DREW CORPORATION",
+            "fein": "35-0821499",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MIDWESTERN ELECTRIC, LLC",
+            "fein": "35-1262778",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MICHIANA CONTRACTING, INC.",
+            "fein": "35-1657131",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "RAGLE, INC.",
+            "fein": "35-1878024",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "HIS CONSTRUCTORS INC",
+            "fein": "38-3806996",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "T-45742-A",
+        "candidate_count": 7,
+        "valid_for_bid": [
+          {
+            "contractor_name": "JAMES H DREW CORPORATION",
+            "fein": "35-0821499"
+          },
+          {
+            "contractor_name": "MIDWESTERN ELECTRIC, LLC",
+            "fein": "35-1262778"
+          },
+          {
+            "contractor_name": "MICHIANA CONTRACTING, INC.",
+            "fein": "35-1657131"
+          },
+          {
+            "contractor_name": "SIGNAL CONSTRUCTION INC",
+            "fein": "35-1710202"
+          },
+          {
+            "contractor_name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222"
+          },
+          {
+            "contractor_name": "HIS CONSTRUCTORS INC",
+            "fein": "38-3806996"
+          },
+          {
+            "contractor_name": "HAWK ENTERPRISES INC",
+            "fein": "62-1339540"
+          }
+        ],
+        "district": "Crawfordsville",
+        "all_candidates": [
+          {
+            "name": "JAMES H DREW CORPORATION",
+            "fein": "35-0821499",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MIDWESTERN ELECTRIC, LLC",
+            "fein": "35-1262778",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MICHIANA CONTRACTING, INC.",
+            "fein": "35-1657131",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "SIGNAL CONSTRUCTION INC",
+            "fein": "35-1710202",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MORPHEY CONSTRUCTION, INC.",
+            "fein": "35-2046222",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "HIS CONSTRUCTORS INC",
+            "fein": "38-3806996",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "HAWK ENTERPRISES INC",
+            "fein": "62-1339540",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "T-45968-A",
+        "candidate_count": 5,
+        "valid_for_bid": [
+          {
+            "contractor_name": "SHAMBAUGH & SON, L.P.",
+            "fein": "35-0965412"
+          },
+          {
+            "contractor_name": "MICHIANA CONTRACTING, INC.",
+            "fein": "35-1657131"
+          },
+          {
+            "contractor_name": "SIGNAL CONSTRUCTION INC",
+            "fein": "35-1710202"
+          },
+          {
+            "contractor_name": "GRIDLOCK TRAFFIC SYSTEMS, INC.",
+            "fein": "35-2040834"
+          },
+          {
+            "contractor_name": "SPECIALTIES COMPANY, LLC",
+            "fein": "35-2110733"
+          }
+        ],
+        "district": null,
+        "all_candidates": [
+          {
+            "name": "SHAMBAUGH & SON, L.P.",
+            "fein": "35-0965412",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MICHIANA CONTRACTING, INC.",
+            "fein": "35-1657131",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "SIGNAL CONSTRUCTION INC",
+            "fein": "35-1710202",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "GRIDLOCK TRAFFIC SYSTEMS, INC.",
+            "fein": "35-2040834",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "SPECIALTIES COMPANY, LLC",
+            "fein": "35-2110733",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "T-45970-A",
+        "candidate_count": 2,
+        "valid_for_bid": [
+          {
+            "contractor_name": "SHAMBAUGH & SON, L.P.",
+            "fein": "35-0965412"
+          },
+          {
+            "contractor_name": "MICHIANA CONTRACTING, INC.",
+            "fein": "35-1657131"
+          }
+        ],
+        "district": null,
+        "all_candidates": [
+          {
+            "name": "SHAMBAUGH & SON, L.P.",
+            "fein": "35-0965412",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MICHIANA CONTRACTING, INC.",
+            "fein": "35-1657131",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "T-46035-A",
+        "candidate_count": 6,
+        "valid_for_bid": [
+          {
+            "contractor_name": "JAMES H DREW CORPORATION",
+            "fein": "35-0821499"
+          },
+          {
+            "contractor_name": "MIDWESTERN ELECTRIC, LLC",
+            "fein": "35-1262778"
+          },
+          {
+            "contractor_name": "C-TECH CORPORATION INC",
+            "fein": "35-1643252"
+          },
+          {
+            "contractor_name": "MICHIANA CONTRACTING, INC.",
+            "fein": "35-1657131"
+          },
+          {
+            "contractor_name": "HAMM CONTRACTING LLC",
+            "fein": "46-0808321"
+          },
+          {
+            "contractor_name": "HAWK ENTERPRISES INC",
+            "fein": "62-1339540"
+          }
+        ],
+        "district": "LaPorte",
+        "all_candidates": [
+          {
+            "name": "JAMES H DREW CORPORATION",
+            "fein": "35-0821499",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MIDWESTERN ELECTRIC, LLC",
+            "fein": "35-1262778",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "C-TECH CORPORATION INC",
+            "fein": "35-1643252",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MICHIANA CONTRACTING, INC.",
+            "fein": "35-1657131",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "HAMM CONTRACTING LLC",
+            "fein": "46-0808321",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "HAWK ENTERPRISES INC",
+            "fein": "62-1339540",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      },
+      {
+        "contract_id": "T-46103-A",
+        "candidate_count": 1,
+        "valid_for_bid": [
+          {
+            "contractor_name": "INC",
+            "fein": "61-1079213"
+          }
+        ],
+        "district": "LaPorte",
+        "all_candidates": [
+          {
+            "name": "INC",
+            "fein": "61-1079213",
+            "valid_for_bid": "Yes"
+          }
+        ]
+      }
+    ]
   }
 }
