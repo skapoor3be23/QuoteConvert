@@ -1,6 +1,6 @@
 {
   "snapshot_version": 1,
-  "retrieved_at": "2026-08-29T15:53:12.489259+00:00",
+  "retrieved_at": "2026-08-30T15:39:03.671473+00:00",
   "source": "INDOT",
   "source_archive_url": "https://www.in.gov/indot/doing-business-with-indot/home/contracts/letting-archives2/",
   "letting": {
@@ -8,7 +8,7 @@
     "letting_page_url": "https://www.in.gov/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-september-2,-2026-regular-letting",
     "status": "available",
     "planholder_url": "https://www.in.gov/indot/doing-business-with-indot/files/Bidders-List-09.02.2026.pdf",
-    "planholder_retrieved_at": "2026-08-29T15:53:17.177047+00:00",
+    "planholder_retrieved_at": "2026-08-30T15:39:08.529179+00:00",
     "planholder_sha256": "6a65460ce915ba7d83d7f65715c2687c19bc1221c434dc6ca95dc93117feb4dc",
     "candidate_count": 183,
     "valid_for_bid_count": 183,
