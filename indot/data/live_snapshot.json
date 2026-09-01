@@ -1,17 +1,17 @@
 {
   "snapshot_version": 1,
-  "retrieved_at": "2026-08-31T18:21:09.663772+00:00",
+  "retrieved_at": "2026-09-01T15:41:56.805496+00:00",
   "source": "INDOT",
   "source_archive_url": "https://www.in.gov/indot/doing-business-with-indot/home/contracts/letting-archives2/",
   "letting": {
     "letting_date": "2026-09-02",
     "letting_page_url": "https://www.in.gov/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-september-2,-2026-regular-letting",
     "status": "available",
-    "planholder_url": "https://www.in.gov/indot/doing-business-with-indot/files/Bidders-List-09.02.2026.pdf",
-    "planholder_retrieved_at": "2026-08-31T18:21:10.660423+00:00",
-    "planholder_sha256": "6a65460ce915ba7d83d7f65715c2687c19bc1221c434dc6ca95dc93117feb4dc",
-    "candidate_count": 183,
-    "valid_for_bid_count": 183,
+    "planholder_url": "https://www.in.gov/indot/doing-business-with-indot/files/BidderList-9.1.pdf",
+    "planholder_retrieved_at": "2026-09-01T15:42:00.071068+00:00",
+    "planholder_sha256": "f86b1357058b4a52bc0c60b107adf5e0680b8080804baa78962d0d74f3a060da",
+    "candidate_count": 192,
+    "valid_for_bid_count": 192,
     "contracts": [
       {
         "contract_id": "B-42374-A",
@@ -60,7 +60,7 @@
       },
       {
         "contract_id": "B-43605-A",
-        "candidate_count": 8,
+        "candidate_count": 9,
         "valid_for_bid": [
           {
             "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC."
@@ -76,6 +76,9 @@
           },
           {
             "contractor_name": "PONTEM CONTRACTORS INC"
+          },
+          {
+            "contractor_name": "INC."
           },
           {
             "contractor_name": "CLR, INC."
@@ -120,7 +123,7 @@
       },
       {
         "contract_id": "B-44104-A",
-        "candidate_count": 6,
+        "candidate_count": 7,
         "valid_for_bid": [
           {
             "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC."
@@ -136,6 +139,9 @@
           },
           {
             "contractor_name": "MILESTONE CONTRACTORS LP"
+          },
+          {
+            "contractor_name": "ICC GROUP INC"
           },
           {
             "contractor_name": "HIS CONSTRUCTORS INC"
@@ -195,8 +201,11 @@
       },
       {
         "contract_id": "B-44269-A",
-        "candidate_count": 9,
+        "candidate_count": 10,
         "valid_for_bid": [
+          {
+            "contractor_name": "SUPERIOR CONSTRUCTION CO., INC."
+          },
           {
             "contractor_name": "BEATY CONSTRUCTION, INC."
           },
@@ -246,13 +255,16 @@
       },
       {
         "contract_id": "B-44473-A",
-        "candidate_count": 4,
+        "candidate_count": 5,
         "valid_for_bid": [
           {
             "contractor_name": "E & B PAVING LLC"
           },
           {
             "contractor_name": "FORCE CONSTRUCTION CO INC"
+          },
+          {
+            "contractor_name": "INC."
           },
           {
             "contractor_name": "RAGLE, INC."
@@ -304,21 +316,6 @@
           },
           {
             "contractor_name": "5 STAR COMPANY INC"
-          }
-        ]
-      },
-      {
-        "contract_id": "B-44643-A",
-        "candidate_count": 3,
-        "valid_for_bid": [
-          {
-            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC."
-          },
-          {
-            "contractor_name": "MILESTONE CONTRACTORS LP"
-          },
-          {
-            "contractor_name": "ENNEKING PRESSURE CLEANING INC."
           }
         ]
       },
@@ -465,13 +462,16 @@
       },
       {
         "contract_id": "R-44461-A",
-        "candidate_count": 9,
+        "candidate_count": 10,
         "valid_for_bid": [
           {
             "contractor_name": "E & B PAVING LLC"
           },
           {
             "contractor_name": "FORCE CONSTRUCTION CO INC"
+          },
+          {
+            "contractor_name": "MAC CONSTRUCTION & EXCAVATING INC"
           },
           {
             "contractor_name": "CLR, INC."
@@ -609,7 +609,7 @@
       },
       {
         "contract_id": "T-44365-C",
-        "candidate_count": 4,
+        "candidate_count": 6,
         "valid_for_bid": [
           {
             "contractor_name": "MIDWESTERN ELECTRIC, LLC"
@@ -618,10 +618,16 @@
             "contractor_name": "MICHIANA CONTRACTING, INC."
           },
           {
+            "contractor_name": "HUMMEL ELECTRIC, INC."
+          },
+          {
             "contractor_name": "SIGNAL CONSTRUCTION INC"
           },
           {
             "contractor_name": "RAGLE, INC."
+          },
+          {
+            "contractor_name": "HIS CONSTRUCTORS INC"
           }
         ]
       },
@@ -645,7 +651,7 @@
       },
       {
         "contract_id": "T-44477-A",
-        "candidate_count": 6,
+        "candidate_count": 7,
         "valid_for_bid": [
           {
             "contractor_name": "JAMES H DREW CORPORATION"
@@ -655,6 +661,9 @@
           },
           {
             "contractor_name": "MICHIANA CONTRACTING, INC."
+          },
+          {
+            "contractor_name": "HUMMEL ELECTRIC, INC."
           },
           {
             "contractor_name": "RAGLE, INC."
@@ -669,8 +678,11 @@
       },
       {
         "contract_id": "T-45742-A",
-        "candidate_count": 7,
+        "candidate_count": 9,
         "valid_for_bid": [
+          {
+            "contractor_name": "THE HOOSIER COMPANY LLC"
+          },
           {
             "contractor_name": "JAMES H DREW CORPORATION"
           },
@@ -679,6 +691,9 @@
           },
           {
             "contractor_name": "MICHIANA CONTRACTING, INC."
+          },
+          {
+            "contractor_name": "HUMMEL ELECTRIC, INC."
           },
           {
             "contractor_name": "SIGNAL CONSTRUCTION INC"
@@ -729,8 +744,11 @@
       },
       {
         "contract_id": "T-46035-A",
-        "candidate_count": 6,
+        "candidate_count": 7,
         "valid_for_bid": [
+          {
+            "contractor_name": "ROADSAFE TRAFFIC SYSTEMS, INC."
+          },
           {
             "contractor_name": "JAMES H DREW CORPORATION"
           },
@@ -753,10 +771,13 @@
       },
       {
         "contract_id": "T-46103-A",
-        "candidate_count": 1,
+        "candidate_count": 2,
         "valid_for_bid": [
           {
             "contractor_name": "INC"
+          },
+          {
+            "contractor_name": "AMERICA'S PARKING REMARKING, LLC"
           }
         ]
       }

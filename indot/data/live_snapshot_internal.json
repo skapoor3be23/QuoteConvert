@@ -1,17 +1,17 @@
 {
   "snapshot_version": 1,
-  "retrieved_at": "2026-08-31T18:21:09.663772+00:00",
+  "retrieved_at": "2026-09-01T15:41:56.805496+00:00",
   "source": "INDOT",
   "source_archive_url": "https://www.in.gov/indot/doing-business-with-indot/home/contracts/letting-archives2/",
   "letting": {
     "letting_date": "2026-09-02",
     "letting_page_url": "https://www.in.gov/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-september-2,-2026-regular-letting",
     "status": "available",
-    "planholder_url": "https://www.in.gov/indot/doing-business-with-indot/files/Bidders-List-09.02.2026.pdf",
-    "planholder_retrieved_at": "2026-08-31T18:21:10.660423+00:00",
-    "planholder_sha256": "6a65460ce915ba7d83d7f65715c2687c19bc1221c434dc6ca95dc93117feb4dc",
-    "candidate_count": 183,
-    "valid_for_bid_count": 183,
+    "planholder_url": "https://www.in.gov/indot/doing-business-with-indot/files/BidderList-9.1.pdf",
+    "planholder_retrieved_at": "2026-09-01T15:42:00.071068+00:00",
+    "planholder_sha256": "f86b1357058b4a52bc0c60b107adf5e0680b8080804baa78962d0d74f3a060da",
+    "candidate_count": 192,
+    "valid_for_bid_count": 192,
     "contracts": [
       {
         "contract_id": "B-42374-A",
@@ -132,7 +132,7 @@
       },
       {
         "contract_id": "B-43605-A",
-        "candidate_count": 8,
+        "candidate_count": 9,
         "valid_for_bid": [
           {
             "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
@@ -153,6 +153,10 @@
           {
             "contractor_name": "PONTEM CONTRACTORS INC",
             "fein": "35-1609544"
+          },
+          {
+            "contractor_name": "INC.",
+            "fein": "35-1618530"
           },
           {
             "contractor_name": "CLR, INC.",
@@ -192,6 +196,11 @@
           {
             "name": "PONTEM CONTRACTORS INC",
             "fein": "35-1609544",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "INC.",
+            "fein": "35-1618530",
             "valid_for_bid": "Yes"
           },
           {
@@ -294,7 +303,7 @@
       },
       {
         "contract_id": "B-44104-A",
-        "candidate_count": 6,
+        "candidate_count": 7,
         "valid_for_bid": [
           {
             "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
@@ -315,6 +324,10 @@
           {
             "contractor_name": "MILESTONE CONTRACTORS LP",
             "fein": "35-1917625"
+          },
+          {
+            "contractor_name": "ICC GROUP INC",
+            "fein": "36-2839689"
           },
           {
             "contractor_name": "HIS CONSTRUCTORS INC",
@@ -346,6 +359,11 @@
           {
             "name": "MILESTONE CONTRACTORS LP",
             "fein": "35-1917625",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "ICC GROUP INC",
+            "fein": "36-2839689",
             "valid_for_bid": "Yes"
           },
           {
@@ -492,8 +510,12 @@
       },
       {
         "contract_id": "B-44269-A",
-        "candidate_count": 9,
+        "candidate_count": 10,
         "valid_for_bid": [
+          {
+            "contractor_name": "SUPERIOR CONSTRUCTION CO., INC.",
+            "fein": "35-1035114"
+          },
           {
             "contractor_name": "BEATY CONSTRUCTION, INC.",
             "fein": "35-1128289"
@@ -533,6 +555,11 @@
         ],
         "district": "Greenfield",
         "all_candidates": [
+          {
+            "name": "SUPERIOR CONSTRUCTION CO., INC.",
+            "fein": "35-1035114",
+            "valid_for_bid": "Yes"
+          },
           {
             "name": "BEATY CONSTRUCTION, INC.",
             "fein": "35-1128289",
@@ -627,7 +654,7 @@
       },
       {
         "contract_id": "B-44473-A",
-        "candidate_count": 4,
+        "candidate_count": 5,
         "valid_for_bid": [
           {
             "contractor_name": "E & B PAVING LLC",
@@ -636,6 +663,10 @@
           {
             "contractor_name": "FORCE CONSTRUCTION CO INC",
             "fein": "35-1385672"
+          },
+          {
+            "contractor_name": "INC.",
+            "fein": "35-1618530"
           },
           {
             "contractor_name": "RAGLE, INC.",
@@ -656,6 +687,11 @@
           {
             "name": "FORCE CONSTRUCTION CO INC",
             "fein": "35-1385672",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "INC.",
+            "fein": "35-1618530",
             "valid_for_bid": "Yes"
           },
           {
@@ -783,42 +819,6 @@
           {
             "name": "5 STAR COMPANY INC",
             "fein": "81-5434991",
-            "valid_for_bid": "Yes"
-          }
-        ]
-      },
-      {
-        "contract_id": "B-44643-A",
-        "candidate_count": 3,
-        "valid_for_bid": [
-          {
-            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
-            "fein": "35-0918397"
-          },
-          {
-            "contractor_name": "MILESTONE CONTRACTORS LP",
-            "fein": "35-1917625"
-          },
-          {
-            "contractor_name": "ENNEKING PRESSURE CLEANING INC.",
-            "fein": "61-1609668"
-          }
-        ],
-        "district": "LaPorte",
-        "all_candidates": [
-          {
-            "name": "RIETH-RILEY CONSTRUCTION CO., INC.",
-            "fein": "35-0918397",
-            "valid_for_bid": "Yes"
-          },
-          {
-            "name": "MILESTONE CONTRACTORS LP",
-            "fein": "35-1917625",
-            "valid_for_bid": "Yes"
-          },
-          {
-            "name": "ENNEKING PRESSURE CLEANING INC.",
-            "fein": "61-1609668",
             "valid_for_bid": "Yes"
           }
         ]
@@ -1194,7 +1194,7 @@
       },
       {
         "contract_id": "R-44461-A",
-        "candidate_count": 9,
+        "candidate_count": 10,
         "valid_for_bid": [
           {
             "contractor_name": "E & B PAVING LLC",
@@ -1203,6 +1203,10 @@
           {
             "contractor_name": "FORCE CONSTRUCTION CO INC",
             "fein": "35-1385672"
+          },
+          {
+            "contractor_name": "MAC CONSTRUCTION & EXCAVATING INC",
+            "fein": "35-1487672"
           },
           {
             "contractor_name": "CLR, INC.",
@@ -1243,6 +1247,11 @@
           {
             "name": "FORCE CONSTRUCTION CO INC",
             "fein": "35-1385672",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "MAC CONSTRUCTION & EXCAVATING INC",
+            "fein": "35-1487672",
             "valid_for_bid": "Yes"
           },
           {
@@ -1572,7 +1581,7 @@
       },
       {
         "contract_id": "T-44365-C",
-        "candidate_count": 4,
+        "candidate_count": 6,
         "valid_for_bid": [
           {
             "contractor_name": "MIDWESTERN ELECTRIC, LLC",
@@ -1583,12 +1592,20 @@
             "fein": "35-1657131"
           },
           {
+            "contractor_name": "HUMMEL ELECTRIC, INC.",
+            "fein": "35-1675187"
+          },
+          {
             "contractor_name": "SIGNAL CONSTRUCTION INC",
             "fein": "35-1710202"
           },
           {
             "contractor_name": "RAGLE, INC.",
             "fein": "35-1878024"
+          },
+          {
+            "contractor_name": "HIS CONSTRUCTORS INC",
+            "fein": "38-3806996"
           }
         ],
         "district": "Vincennes",
@@ -1604,6 +1621,11 @@
             "valid_for_bid": "Yes"
           },
           {
+            "name": "HUMMEL ELECTRIC, INC.",
+            "fein": "35-1675187",
+            "valid_for_bid": "Yes"
+          },
+          {
             "name": "SIGNAL CONSTRUCTION INC",
             "fein": "35-1710202",
             "valid_for_bid": "Yes"
@@ -1611,6 +1633,11 @@
           {
             "name": "RAGLE, INC.",
             "fein": "35-1878024",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "HIS CONSTRUCTORS INC",
+            "fein": "38-3806996",
             "valid_for_bid": "Yes"
           }
         ]
@@ -1662,7 +1689,7 @@
       },
       {
         "contract_id": "T-44477-A",
-        "candidate_count": 6,
+        "candidate_count": 7,
         "valid_for_bid": [
           {
             "contractor_name": "JAMES H DREW CORPORATION",
@@ -1675,6 +1702,10 @@
           {
             "contractor_name": "MICHIANA CONTRACTING, INC.",
             "fein": "35-1657131"
+          },
+          {
+            "contractor_name": "HUMMEL ELECTRIC, INC.",
+            "fein": "35-1675187"
           },
           {
             "contractor_name": "RAGLE, INC.",
@@ -1707,6 +1738,11 @@
             "valid_for_bid": "Yes"
           },
           {
+            "name": "HUMMEL ELECTRIC, INC.",
+            "fein": "35-1675187",
+            "valid_for_bid": "Yes"
+          },
+          {
             "name": "RAGLE, INC.",
             "fein": "35-1878024",
             "valid_for_bid": "Yes"
@@ -1725,8 +1761,12 @@
       },
       {
         "contract_id": "T-45742-A",
-        "candidate_count": 7,
+        "candidate_count": 9,
         "valid_for_bid": [
+          {
+            "contractor_name": "THE HOOSIER COMPANY LLC",
+            "fein": "35-0392360"
+          },
           {
             "contractor_name": "JAMES H DREW CORPORATION",
             "fein": "35-0821499"
@@ -1738,6 +1778,10 @@
           {
             "contractor_name": "MICHIANA CONTRACTING, INC.",
             "fein": "35-1657131"
+          },
+          {
+            "contractor_name": "HUMMEL ELECTRIC, INC.",
+            "fein": "35-1675187"
           },
           {
             "contractor_name": "SIGNAL CONSTRUCTION INC",
@@ -1759,6 +1803,11 @@
         "district": "Crawfordsville",
         "all_candidates": [
           {
+            "name": "THE HOOSIER COMPANY LLC",
+            "fein": "35-0392360",
+            "valid_for_bid": "Yes"
+          },
+          {
             "name": "JAMES H DREW CORPORATION",
             "fein": "35-0821499",
             "valid_for_bid": "Yes"
@@ -1771,6 +1820,11 @@
           {
             "name": "MICHIANA CONTRACTING, INC.",
             "fein": "35-1657131",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "HUMMEL ELECTRIC, INC.",
+            "fein": "35-1675187",
             "valid_for_bid": "Yes"
           },
           {
@@ -1878,8 +1932,12 @@
       },
       {
         "contract_id": "T-46035-A",
-        "candidate_count": 6,
+        "candidate_count": 7,
         "valid_for_bid": [
+          {
+            "contractor_name": "ROADSAFE TRAFFIC SYSTEMS, INC.",
+            "fein": "26-1084418"
+          },
           {
             "contractor_name": "JAMES H DREW CORPORATION",
             "fein": "35-0821499"
@@ -1907,6 +1965,11 @@
         ],
         "district": "LaPorte",
         "all_candidates": [
+          {
+            "name": "ROADSAFE TRAFFIC SYSTEMS, INC.",
+            "fein": "26-1084418",
+            "valid_for_bid": "Yes"
+          },
           {
             "name": "JAMES H DREW CORPORATION",
             "fein": "35-0821499",
@@ -1941,11 +2004,15 @@
       },
       {
         "contract_id": "T-46103-A",
-        "candidate_count": 1,
+        "candidate_count": 2,
         "valid_for_bid": [
           {
             "contractor_name": "INC",
             "fein": "61-1079213"
+          },
+          {
+            "contractor_name": "AMERICA'S PARKING REMARKING, LLC",
+            "fein": "75-3026772"
           }
         ],
         "district": "LaPorte",
@@ -1953,6 +2020,11 @@
           {
             "name": "INC",
             "fein": "61-1079213",
+            "valid_for_bid": "Yes"
+          },
+          {
+            "name": "AMERICA'S PARKING REMARKING, LLC",
+            "fein": "75-3026772",
             "valid_for_bid": "Yes"
           }
         ]
