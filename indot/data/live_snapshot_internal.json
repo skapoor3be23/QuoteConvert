@@ -1,72 +1,11 @@
 {
   "snapshot_version": 1,
-  "retrieved_at": "2026-09-09T15:28:54.304773+00:00",
+  "retrieved_at": "2026-09-10T15:24:02.306127+00:00",
   "source": "INDOT",
   "source_archive_url": "https://www.in.gov/indot/doing-business-with-indot/home/contracts/letting-archives2/",
   "letting": {
-    "letting_date": "2026-09-09",
-    "letting_page_url": "https://www.in.gov/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday,-september-9,-2026-special-letting",
-    "status": "available",
-    "planholder_url": "https://www.in.gov/indot/doing-business-with-indot/files/BidderList-09.09.26.pdf",
-    "planholder_retrieved_at": "2026-09-09T15:28:54.921701+00:00",
-    "planholder_sha256": "9b15ec81bc419f6dcccac2d007ac995a22a99c047ba28ba5c9c786af1040662c",
-    "candidate_count": 4,
-    "valid_for_bid_count": 4,
-    "contracts": [
-      {
-        "contract_id": "B-44643-A",
-        "candidate_count": 3,
-        "valid_for_bid": [
-          {
-            "contractor_name": "RIETH-RILEY CONSTRUCTION CO., INC.",
-            "fein": "35-0918397"
-          },
-          {
-            "contractor_name": "MILESTONE CONTRACTORS LP",
-            "fein": "35-1917625"
-          },
-          {
-            "contractor_name": "ENNEKING PRESSURE CLEANING INC.",
-            "fein": "61-1609668"
-          }
-        ],
-        "district": "LaPorte",
-        "all_candidates": [
-          {
-            "name": "RIETH-RILEY CONSTRUCTION CO., INC.",
-            "fein": "35-0918397",
-            "valid_for_bid": "Yes"
-          },
-          {
-            "name": "MILESTONE CONTRACTORS LP",
-            "fein": "35-1917625",
-            "valid_for_bid": "Yes"
-          },
-          {
-            "name": "ENNEKING PRESSURE CLEANING INC.",
-            "fein": "61-1609668",
-            "valid_for_bid": "Yes"
-          }
-        ]
-      },
-      {
-        "contract_id": "B-46898-A",
-        "candidate_count": 1,
-        "valid_for_bid": [
-          {
-            "contractor_name": "SUPERIOR CONSTRUCTION CO., INC.",
-            "fein": "35-1035114"
-          }
-        ],
-        "district": "LaPorte",
-        "all_candidates": [
-          {
-            "name": "SUPERIOR CONSTRUCTION CO., INC.",
-            "fein": "35-1035114",
-            "valid_for_bid": "Yes"
-          }
-        ]
-      }
-    ]
+    "letting_date": "2026-10-07",
+    "letting_page_url": "https://www.in.gov/indot/doing-business-with-indot/home/contracts/letting-archives2/wednesday-october-7-2026-regular-letting",
+    "status": "no_prebid_candidate_list"
   }
 }
