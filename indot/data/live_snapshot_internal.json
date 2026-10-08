@@ -1,11 +1,11 @@
 {
   "snapshot_version": 1,
-  "retrieved_at": "2026-10-07T18:04:16.676431+00:00",
+  "retrieved_at": "2026-10-08T18:06:25.055852+00:00",
   "source": "INDOT",
   "source_archive_url": "https://www.in.gov/indot/doing-business-with-indot/home/contracts/letting-archives2/",
   "letting": {
-    "letting_date": "2026-10-07",
-    "letting_page_url": "https://www.in.gov/indot/doing-business-with-indot/wednesday-october-7-2026-regular-letting",
+    "letting_date": "2026-11-05",
+    "letting_page_url": "https://www.in.gov/indot/doing-business-with-indot/thursday-november-5-2026-regular-letting",
     "status": "no_prebid_candidate_list"
   }
 }
